@@ -1,3 +1,6 @@
+../.vscode/*
+build/
+
 # ignore the gigantic datafile 
 yelp_final_dataset
 # Prerequisites
