@@ -1,7 +1,7 @@
 #ifndef FILE_H_
 #define FILE_H_
 
-// #include "string.h"
+#include "string.h"
 #include <string>
 using namespace std;
 /* A class for Record ID

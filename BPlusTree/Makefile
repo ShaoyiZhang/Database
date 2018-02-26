@@ -14,6 +14,7 @@ all: ${BINARIES}
 main: Graph.o BTree.o Main.o
 	${CXX} $^ -o $@
 
+#test01.o : File.cpp Node.cpp test01.cpp
 test01: File.o Node.o test01.o
 	${CXX} $^ -o $@
 

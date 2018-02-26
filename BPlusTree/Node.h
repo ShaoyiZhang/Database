@@ -19,23 +19,24 @@ class Node{
   vector< Node * > parent;
   
   // the following fields are only useful in leaf node
-  vector< FilePointer::FilePointer > filePointers; // only useful in leaf nodes  
+  vector< FilePointer > filePointers; // only useful in leaf nodes  
   Node * previous; // used in range query
   Node * next; // used in range query
 
  public:
   Node();
   // constructer for root
-  Node( string word, FilePointer::FilePointer );  
+  Node( string word, FilePointer fp );  
   //constructor for a leaf
-  Node( string word, bool isLeaf ); 
+  Node( string word, bool isLeaf );
+  Node( string word, FilePointer fp, bool isLeaf );  
   // Node( string word );
 
-  ~Node();
+  ~Node(){};
   //constructor for an internal node
   // Node(Node ** arrayOfNodes, int size);
 
-   bool GetIsLeaf() const { return isLeaf; }
+  bool GetIsLeaf() const { return isLeaf; }
   void SetIsLeaf( bool value ){ isLeaf = value; }
   void InsertLeaf( string name, int index, int endPos );
 
