@@ -11,7 +11,7 @@
                 0            filePtr0
                 1            filePtr1
                 2            filePtr2
-    ```
+
         where FilePointer is ( file name, offset, numOfDupKey ), so each FilePointer is "pointing" to a page of the secondary layer:
 
     - secondary layer (multiple files on disk):
@@ -23,7 +23,7 @@
 
 
 ***
-## Classes:
+## Classes
 
 - WordFPtrPair
   - it is in the form of:
