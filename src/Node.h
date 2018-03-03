@@ -6,16 +6,16 @@
 #include "File.h"
 using namespace std;
 
-const int M = 5;
-const int L = 3;
+const int M = 5;   // num of max pointers to next level
+const int L = 3;   // num of max profiles
 
 class Node{
  private:
   vector< string > keys;
-  vector< Node * > nextLevel;
+  vector< Node * > children;
   bool isLeaf;
-  int occupancy;
-  int capacity;
+  // int occupancy;
+  // int capacity;
   vector< Node * > parent;
   
   // the following fields are only useful in leaf node
@@ -40,12 +40,28 @@ class Node{
   void SetIsLeaf( bool value ){ isLeaf = value; }
   void InsertLeaf( string name, int index, int endPos );
 
-  int GetCapcity() const { return this->capacity; };
-  int GetOccupancy() const { return this->occupancy; };
+  // int GetCapcity() const { return this->capacity; };
+  // int GetOccupancy() const { return this->occupancy; };
 
   string GetKeyAt( int index ) const { return keys[index]; };
   void SetKeyAt( int index, string key ) { this->keys[index] = key; };
-
+  
+  int IndexOfKey(string key) const;
+  int GetValueAt(int index) { return this->values[index]; };
+  void SetValueAt(int index, int value) { this->values[index]=value; };
+  Node* GetParent() { return parent; };
+  void SetParent(Node* parent) { this->parent=parent; };
+  void IncrOccupancy() { occupancy++; };
+  Node* GetNextLevel( string key ) const;
+  int IndexOfChild( string key ) const;
+  Node* Add(Node* child,Node* root);
+  Node* Add(string key, int value, Node* root);
+  vector< Node * > * GetChildren() { return children; };
+  void SetChildrenAt(int index, Node* child){ this->children[index] = child; };
+  Node* GetNext(){ return next; };
+  Node* GetPrevious(){ return previous; };
+  void SetNext(Node* next){ this->next = next; };
+  void SetPrevious(Node* previous){ this->previous = previous; };
   // Node SplitNoneLeaf( Node* root);
   // Node SplitRoot( Node* root);
   // Node SplitLeaf( Node* root);
@@ -69,26 +85,13 @@ public:
   Node(bool isLeaf, Node* parent);
   bool IsLeaf(){ return this->isLeaf; };
 
-  int IndexOfKey(string key) const;
 
-  void SetValueAt(int index, int value){ this->values[index]=value; };
-  int GetValueAt(int index){return this->values[index];};
-  Node* GetParent(){ return parent; };
-  void SetParent(Node* parent){ this->parent=parent; };
-  void IncrOccupancy(){ occupancy++; };
-  Node* GetNextLevel(string key) const;
-  int IndexOfChild(string key) const;
-  Node* Add(Node* child,Node* root);
-  Node* Add(string key, int value, Node* root);
+
+
   ~Node();
 
   void Print();
-  Node** GetChildren(){ return children; };
-  void SetChildrenAt(int index, Node* child){ this->children[index] = child; };
-  Node* GetNext(){ return next; };
-  Node* GetPrevious(){ return previous; };
-  void SetNext(Node* next){ this->next = next; };
-  void SetPrevious(Node* previous){ this->previous = previous; };
+
   void PrintAllKeys(){
       for(int i = 0; i < occupancy-1; i++)
           cout << keys[i];
