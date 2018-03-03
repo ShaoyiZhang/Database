@@ -5,10 +5,42 @@
 #include <algorithm>
 #include <iterator>
 // #include "?.h" // ?.h
+void splitStrToVec_whitespace(std::vector<std::string> &v, const string& str) {
+    istringstream iss(str);
+    std::copy(istream_iterator<string>(iss),
+         istream_iterator<string>(),
+         back_inserter(v));
+}
 
+// just for test
+// load index file
+void load(const string& indexFile){
+    std::cout << "now loading indexfile: " << indexFile << endl;
+}
+
+// merge index files
+void merge(const string& indexFile, const string& indexFile_merge){
+    std::cout << "now merging indexfile: " << indexFile_merge << " into: " << indexFile << endl;
+}
+
+// insert new doc into indexfile
+void insert(const string& indexFile, const string& docFileName) {
+    std::cout << "now inserting doc file: " << docFileName << " into: " << indexFile << endl;
+}
+
+// delete doc from indexFile
+void delete(const string& indexFile, const string& docFileName) {
+    std::cout << "now deleting doc file: " << docFileName << " from: " << indexFile << endl;
+}
+
+// count keyword
+// void count(const string& indexFile, const string& keyword) {
+//     std::cout << "now counting occurence : " << docFileName << " from: " << indexFile << endl;
+//
+// }
 int main(int argc,char* argv[])
 {
-    
+
     std::string indexFile = "";  // should be a class object
     while (!std::cin.eof()) {
         string thisLine;
@@ -27,7 +59,7 @@ int main(int argc,char* argv[])
         }
         else if (std::thisLine.find("insert") != std::string::npos) { // > insert [document name]: Insert the word:document name pair into the index.
             std::string docFileName = thisLine.substr(thisLine.find("insert")+7);
-            load(indexFile, docFileName);
+            insert(indexFile, docFileName);
             // assume that load takes the address of the new document and adds its contents into the index file
         }
         else if (std::thisLine.find("delete") != std::string::npos) { // delete [document name]: Removes a document with the given name from the index
@@ -77,11 +109,4 @@ int main(int argc,char* argv[])
 
     }
     return 0;
-}
-
-void splitStrToVec_whitespace(std::vector<std::string> &v, const string& str) {
-    istringstream iss(str);
-    std::copy(istream_iterator<string>(iss),
-         istream_iterator<string>(),
-         back_inserter(v));
 }
