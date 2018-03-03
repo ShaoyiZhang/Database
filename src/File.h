@@ -1,6 +1,9 @@
 #ifndef FILE_H_
 #define FILE_H_
 
+#include "string.h"
+#include <string>
+using namespace std;
 /* A class for Record ID
   An instance of this class will include:
   1. index file name ( index directory name in our project )
@@ -16,7 +19,7 @@
 class FilePointer {
 public:
   FilePointer( const char *filename, long int offset, int nDupKeys );
-  FilePointer( string filename, long int offset, int nDupKeys,  );
+  FilePointer( string filename, long int offset, int nDupKeys  );
   // Test only
   FilePointer( const char *filename, long int offset, int nDupKeys, string word );
   FilePointer( string filename, long int offset, int nDupKeys, string word );
@@ -41,9 +44,9 @@ private:
   A wrapper class for file operations
   might be unnecessary
 */
-class FileOperation {
+// class FileOperation {
 
-};
+// };
 
 
 #endif
