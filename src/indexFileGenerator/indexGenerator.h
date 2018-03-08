@@ -6,7 +6,8 @@
 #include <vector>
 using namespace std;
 
-#include "../File.h" // for filePointer
+// #include "../File.h" // for filePointer
+
 
 class WordFPtrPair {
 public:
@@ -40,7 +41,8 @@ class indexFileObj {
 public:
     OuterLayer outter;
     SecondaryLayer inner;
-    indexFileObj(char* outFileName, char* inFileName);
+    indexFileObj(char* originDataFN, char* outFileName, char* inFileName);
+    indexFileObj merge
 
 };
 

@@ -26,11 +26,17 @@
 ## Classes
 
 - WordFPtrPair
-  - it is in the form of:
+
+  it is in the form of:
 ```
         hash(word0) | FilePointer
 ```
 - OuterLayer
+
+  - metadata (first line in the file):
+    - the file name for SecondaryLayer:
+
+      directly output in string on the first line for now
 
 - PageOfIndex
 
