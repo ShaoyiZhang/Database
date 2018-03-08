@@ -27,7 +27,7 @@
 
 - WordFPtrPair
   - it is in the form of:
- ```
+```
         hash(word0) | FilePointer
 ```
 - OuterLayer
@@ -36,7 +36,13 @@
 
 - SecondaryLayer
 
+- IndexFileObj (the only public one)
+
 ***
 ## Dependencies
 
 - It borrows FilePointer from file.h, ...
+
+## some useful codes
+
+int tempVal = stoi(tempraryStr.substr(0, 8), nullptr, 2);
