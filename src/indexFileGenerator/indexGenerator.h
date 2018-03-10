@@ -16,11 +16,15 @@ private:
     size_t prevPairLoc; // (2) previous pair of the same word's location
     size_t nextPairLoc; // (3) next pair of the same word's location
     FilePointer ptr;    // (4) pointing to the file which stores a list of doc IDs
-    char isLocked;      // (5) concurrency and implement later
+    char isLocked;      // (5) concurrency, implement later
     char* toBinFile(const IndexLineObj& pair); // return binary format, implement later
 public:
     IndexLineObj(const char* word, const FilePointer& fptr, char isLocked = 0 /*, size_t prev, size_t next */);
     ~IndexLineObj();
+    setPrev(size_t prev);
+    setNext(size_t next);
+    size_t getPrev();
+    size_t getNext();
     void print();       // output to console for debugging, OuterLayerObj controls writing process
 };
 
