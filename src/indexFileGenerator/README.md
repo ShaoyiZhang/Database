@@ -7,42 +7,26 @@
 
     - outer layer (one file on disk):
     ```
-            hash(word_i)    FilePointer
-               0            filePtr0
-               1            filePtr1
-               2            filePtr2
+        line       content
+
+          1         [metaData] (one line)
+          2+        hash(word_i)    prev    next    FilePointer
+
     ```
-    where FilePointer is ( file name, offset, numOfDupKey ), so each FilePointer is "pointing" to a page of the secondary layer:
+    ```
+          2          xxx             -1       5      filePtrA
+          3          yyy             -1      -1      filePtrB
+          4          zzz             -1      -1      filePtrC
+          5          xxx              2      -1      filePtrD
+    ```
+
+        where FilePointer is ( file name, offset, numOfDupKey ), so each FilePointer is "pointing" to a page of the secondary layer
 
     - secondary layer (multiple files on disk):
 
-        - each file is essentially a "page", which consist the **binary** form of:   
-        ```        
-                (hashvalue, docList, prevPage, nextPage)
-        ```
+        - each file is essentially a "page", which consists a list of document IDs
 
 
-***
-## Classes
-
-- WordFPtrPair
-
-  it is in the form of:
-```
-        hash(word0) | FilePointer
-```
-- OuterLayer
-
-  - metadata (first line in the file):
-    - the file name for SecondaryLayer:
-
-      directly output in string on the first line for now
-
-- PageOfIndex
-
-- SecondaryLayer
-
-- IndexFileObj (the only public one)
 
 ***
 ## Dependencies
