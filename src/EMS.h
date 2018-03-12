@@ -5,6 +5,11 @@
 #ifndef DATABASE_EMS_H
 #define DATABASE_EMS_H
 
+int MAX = 65536;
+int MAX_BUFFER = 8096;
+
+//char metadata[100];
+int numRows;
 
 #include <cstdlib>
 #include <string>
