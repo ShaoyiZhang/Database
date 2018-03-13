@@ -101,7 +101,7 @@ void MinHeap::insertKey(MinHeapNode k)
     harr[i] = k;
     printf("inserting: %d\n", k.element.hash);
     // Fix the min heap property if it is violated
-    while (i != 0 && (harr[parent(i)].element.hash > harr[i].element.hash))
+    while (i != 0 && ((int)harr[parent(i)].element.hash > (int)harr[i].element.hash))
     { printf("this needs to be swapped...........i: %d, \n", i);
         printf("because I think %d is bigger than %d, \n", harr[parent(i)].element.hash, harr[i].element.hash);
         swap(&harr[i], &harr[parent(i)]);
@@ -118,12 +118,12 @@ void MinHeap::MinHeapify(int i) {
     int smallest = i;
 //    printf("PREEE i: %d, l: %d, r: %d, small: %d\n", i,l, r, smallest);
 //    printf("11111111\n");
-    if (l < heap_size && harr[l].element.hash < harr[i].element.hash) {
+    if (l < heap_size && (int)harr[l].element.hash < (int)harr[i].element.hash) {
 //        printf("2222222\n");
         smallest = l;
     }
 //    printf("666666\n");
-    if (r < heap_size && harr[r].element.hash < harr[smallest].element.hash) {
+    if (r < heap_size && (int)harr[r].element.hash < (int)harr[smallest].element.hash) {
 //        printf("3333333\n");
         smallest = r;
     }
@@ -172,7 +172,7 @@ void merge(struct IndexRecord arr[], int l, int m, int r) {
     j = 0; // Initial index of second subarray
     k = l; // Initial index of merged subarray
     while (i < n1 && j < n2) {
-        if (L[i].hash <= R[j].hash)
+        if ((int)L[i].hash <= (int)R[j].hash)
             arr[k++] = L[i++];
         else
             arr[k++] = R[j++];
@@ -247,8 +247,8 @@ void mergeFiles(char *output_file, int n, int k) {
 
         harr[i].i = i; // Index of scratch output file
     }
-    printf("i is: %d\n", i);
-
+//    printf("i is: %d\n", i);
+    fprintf(out, "%d\n", numRows);
 //    for (int k=0; k<i; k++){
 //        pN(harr[k]);
 //    }
@@ -256,30 +256,53 @@ void mergeFiles(char *output_file, int n, int k) {
     MinHeap hp(harr, i); // Create the heap
 
     int count = 0;
-    int cc = 0;
+    int rowNum = 1;
     int stats[k];
     for (int u = 0; u<k; u++)
         stats[u]=0;
+
+    struct MinHeapNode prev;
+    struct MinHeapNode curr;
     // Now one by one get the minimum element from min
     // heap and replace it with next element.
     // run till all filled input files reach EOF
     while (count != i) {
         // Get the minimum element and store it in output file
         MinHeapNode root = hp.getMin();
-        fprintf(out, "%d\t%d\t%d\t%s\n", root.element.hash, root.element.prev,
-                root.element.next, root.element.filePointer.c_str());
-        printf("getting out: \n");
-        pR(root.element);
 
-//        printf("outputting: %d\n", cc++);
+        if (rowNum == 1){
+            curr = root;
+            curr.element.prev = 0;
+        }
+        else {
+            prev = curr;
+            curr = root;
+
+            if (prev.element.hash == curr.element.hash) {
+                prev.element.next = rowNum;
+                curr.element.prev = rowNum - 1;
+            } else {
+                prev.element.next = 0;
+                curr.element.prev = 0;
+            }
+            fprintf(out, "%d\t%d\t%d\t%s\n", prev.element.hash, prev.element.prev,
+                    prev.element.next, prev.element.filePointer.c_str());
+        }
+
+//        fprintf(out, "%d\t%d\t%d\t%s\n", root.element.hash, root.element.prev,
+//                root.element.next, root.element.filePointer.c_str());
+//        printf("getting out: \n");
+//        pR(root.element);
+
+//        printf("outputting: %d\n", rowNum++);
         // Find the next element that will replace current
         // root of heap. The next element belongs to same
         // input file as the current min element.
         int flag = 0;
         if (fscanf(in[root.i], "%d\t", &root.element.hash) != 1) {
-            struct IndexRecord ir = {SIZE_MAX, 0000, 1111, ""};
+            struct IndexRecord ir = {MAX, 0000, 1111, ""};
             root.element = ir;
-            printf("break at %d, file %d\n", cc, root.i);
+            printf("break at %d, file %d\n", rowNum, root.i);
             printf("printing stats: \n");
             for (int l=0; l<k; l++){
                 printf("%d ", stats[root.i]);
@@ -295,7 +318,7 @@ void mergeFiles(char *output_file, int n, int k) {
             fscanf(in[root.i], "%d\t", &root.element.next);
             fscanf(in[root.i], "%s\n", ccc); root.element.filePointer = ccc;
             stats[root.i]++;
-            cc++;
+            rowNum++;
         }
 
         printf("replace with: \n");
@@ -303,6 +326,11 @@ void mergeFiles(char *output_file, int n, int k) {
         // Replace root with next element of input file
         hp.replaceMin(root);
     }
+
+    prev = curr;
+    prev.element.next = 0;
+    fprintf(out, "%d\t%d\t%d\t%s\n", prev.element.hash, prev.element.prev,
+            prev.element.next, prev.element.filePointer.c_str());
 
     // close input and output files
     for (int i = 0; i < k; i++)
@@ -336,6 +364,13 @@ void createInitialRuns(char *input_file, int run_size,
     bool more_input = true;
     int next_output_file = 0;
 
+    // read first row metadata
+    if (fscanf(in, "%d\n", &numRows) != 1)
+    {
+        printf("Metadata missing\n");
+        exit(1);
+    }
+
     int i;
     while (more_input) {
         // write run_size elements into arr from input file
@@ -351,11 +386,8 @@ void createInitialRuns(char *input_file, int run_size,
             char ccc[100];
             fscanf(in, "%d\t", &arr[i].prev);
             fscanf(in, "%d\t", &arr[i].next);
-            fscanf(in, "%s", ccc); arr[i].filePointer = ccc;
-//            printf("hash: %d\n", arr[i].hash);
-//            printf("hash: %d\n", arr[i].prev);
-//            printf("hash: %d\n", arr[i].next);
-            printf("cstr: %s\n", arr[i].filePointer.c_str());
+            fscanf(in, "%s\n", ccc); arr[i].filePointer = ccc;
+//            printf("cstr: %s\n", arr[i].filePointer.c_str());
         }
 
         // sort array using merge sort
@@ -398,37 +430,48 @@ void externalSort(char *input_file, char *output_file, int num_ways, int run_siz
 
 // Driver program to test above
 int main() {
-    int totalWords = 70000; //50000
-    int B = 20; //20
-
-    // No. of Partitions of input file.
-    int num_ways = B;
-
-    // The size of each partition
-    int run_size;
-    // The size of last partition
-    int last_size;
-
-    if (totalWords % num_ways == 0) {
-        run_size = totalWords / num_ways;
-//        last_size = 0;
-    } else {
-        run_size = totalWords / num_ways + 1;
-//        last_size = totalWords - (run_size * (num_ways - 1));
-    }
+    int totalWords; //50000
+    int B = MAX_BUFFER; //20
 
     char input_file[] = "input.txt";
     char output_file[] = "output.txt";
 
-    FILE *in = openFile(input_file, "w");
+    FILE *in = openFile(input_file, "r");
+    if (fscanf(in, "%d\n", &numRows) != 1)
+    {
+        printf("Metadata missing\n");
+        exit(1);
+    }
+    fclose(in);
+
+    totalWords = numRows;
+
+    // No. of Partitions of input file.
+    int num_ways;
+
+    // The size of each partition
+    int run_size;
+    // The size of last partition
+
+    if (totalWords % B == 0){
+        num_ways = totalWords / B;
+        run_size = B;
+    } else {
+        num_ways = totalWords / B + 1;
+        run_size = B;
+    }
+
+    in = openFile(input_file, "w");
 
     srand(time(NULL));
 
     int max_number = 65536;
     int minimum_number = 0;
 
+    fprintf(in, "%d\n", 50000);
+
     // generate input
-    for (int i = 0; i < num_ways * run_size; i++)
+    for (int i = 0; i < totalWords; i++)
         fprintf(in, "%d\t%d\t%d\t%s\n", rand() % (max_number + 1 - minimum_number) + minimum_number,
                 0000, 1111, "12345678");
 
