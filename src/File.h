@@ -23,6 +23,19 @@ public:
   // Test only
   FilePointer( const char *filename, long int offset, int nDupKeys, string word );
   FilePointer( string filename, long int offset, int nDupKeys, string word );
+  string getFileName() { return this->filename; }
+  string getFileName() const { return this->filename; }
+  
+  int getPageID();
+  long int getOffset();
+  int getNDupKeys();
+  string getWord() { return this->word; };
+  string getWord() const { return this->word; };
+  
+  bool operator == ( FilePointer const &other );
+  friend ostream& operator <<( ostream& out, const FilePointer& fp );
+  // friend ostream& operator<<(ostream& out, const Vector2D& vec) // output
+
 private:
   char * filename; // index file name a.k.a. directory name for the index files
   int pageID; // index page id
