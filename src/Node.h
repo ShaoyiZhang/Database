@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <assert.h>
 #include "File.h"
 using namespace std;
 
@@ -32,76 +33,49 @@ private:
   // constructer for root
   Node( FilePointer fp );  
   //constructor for a leaf
-  Node( FilePointer fp, bool isLeaf );
+  Node( FilePointer fp, bool isLeaf, Node * parent );
+  Node( bool isLeaf, Node * parent );
   // Node( FilePointer fp, bool isLeaf );  
   // Node( string word );
 
   ~Node(){};
   //constructor for an internal node
   // Node(Node ** arrayOfNodes, int size);
-
-  bool GetIsLeaf() const { return isLeaf; }
-  void SetIsLeaf( bool isLeaf ){ isLeaf = isLeaf; }
-  void InsertLeaf( string name, int index, int endPos );
-  bool IsContain( FilePointer record );
+  int size() { return this->keys.size(); }
+  bool getIsLeaf() { return isLeaf; }
+  void setIsLeaf( bool isLeaf ){ isLeaf = isLeaf; }
+  void insertLeaf( string name, int index, int endPos );
+  bool isContain( FilePointer record );
   // int GetCapcity() const { return this->capacity; };
   // int GetOccupancy() const { return this->occupancy; };
-
-  string GetKeyAt( int index ) const { return keys[index]; };
-  void SetKeyAt( int index, string key ) { this->keys[index] = key; };
+  void print();
+  string getKeyAt( int index ) { return keys[index]; };
+  void setKeyAt( int index, string key ) { this->keys[index] = key; };
+  // used for split leaf
+  void appendKey( string word ) { this->keys.push_back( word ); }
+  void appendValue( FilePointer fp ) { this->filePointers.push_back( fp ); };
   
-  int IndexOfKey( string key );
-  int IndexOfFilePointer( string word );
-  FilePointer GetFPAt( int index ) const { return this->filePointers[index]; };
-  void SetFPAt(int index, FilePointer fp) { this->filePointers[index] = fp; };
-  Node* GetParent() const { return parent; };
-  void SetParent(Node* parent) { this->parent=parent; };
+  // used in leaf node 
+  void insertKeyValuePair( string word, FilePointer fp );
+
+  int indexOfKey( string key );
+  int indexOfFilePointer( string word );
+  FilePointer getFPAt( int index ) { return this->filePointers[index]; };
+  void setFPAt(int index, FilePointer fp) { this->filePointers[index] = fp; };
+  Node* getParent() { return parent; };
+  void setParent(Node* parent) { this->parent=parent; };
   // void IncrOccupancy() { occupancy++; };
-  vector< Node * > * GetNextLevel( string key );
-  int IndexOfChild( string key );
-  Node* Add( Node* child, Node* root);
-  Node* Add(string key, FilePointer fp, Node* root);
-  vector< Node * > * GetChildren() { return &children; };
-  void SetChildrenAt(int index, Node* child){ this->children[index] = child; };
-  Node* GetNext(){ return next; };
-  Node* GetPrevious(){ return previous; };
-  void SetNext(Node* next){ this->next = next; };
-  void SetPrevious(Node* previous){ this->previous = previous; };
-  Node * SplitNoneLeaf( Node* root);
-  Node * SplitRoot( Node* root);
-  Node * SplitLeaf( Node* root);
+  vector< Node * > * getNextLevel( string key );
+  int indexOfChild( string key );
+  // Node* Add( Node* child, Node* root);
+  // Node* Add(string key, FilePointer fp, Node* root);
+  vector< Node * > * getChildren() { return &children; };
+  void setChildAt(int index, Node* child){ this->children[index] = child; };
+  Node * getChildAt( int index ) { return this->children[index]; }
+  Node* getNext(){ return next; };
+  Node* getPrevious(){ return previous; };
+  void setNext(Node* next){ this->next = next; };
+  void setPrevious(Node* previous){ this->previous = previous; };
 };
 
-/*
-class Node{
-private:
-  string* keys;
-  int* values;
-  Node** children;
-  Node* parent;
-  bool isLeaf;
-  int occupancy;
-  int capacity;
-  Node* previous;
-  Node* next;
-public:
-  Node():keys(NULL),values(NULL),children(NULL),parent(NULL),isLeaf(false),occupancy(0),capacity(0),previous(NULL),next(NULL){};
-  Node(bool isLeaf);
-  Node(bool isLeaf, Node* parent);
-  bool IsLeaf(){ return this->isLeaf; };
-
-
-
-
-  ~Node();
-
-  void Print();
-
-  void PrintAllKeys(){
-      for(int i = 0; i < occupancy-1; i++)
-          cout << keys[i];
-      cout << endl;
-  };
-};
-*/
 #endif

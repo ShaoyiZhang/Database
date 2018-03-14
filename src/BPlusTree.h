@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include "Node.h"
-#include <utility>
+// #include <utility> 
+#include <math.h> // ceil
 using namespace std;
 
 extern const int M;
@@ -24,17 +25,25 @@ public:
   BPlusTree();
   BPlusTree( FilePointer record );
   ~BPlusTree();
-  int GetCount(){ return count; };
-  bool IsRoot( Node * cur ) const { return cur == root; }
-  void Insert( FilePointer record );
-  Node * SearchHelper( string word );
-  pair< Node *, int > Search( string word );  
-  Node * GetRoot() const { return root; };
-  Node * InsertHelper( FilePointer record, Node * cur );
-  void PrintAll(){ PrintAll(root); };
-  void PrintAll( Node * root );
-  void PrintAllKeys( Node * root );
-  void PrintBetween( FilePointer start, FilePointer end );
+  int getCount(){ return count; };
+  bool isRoot( Node * cur ) const { return cur == root; }
+
+  void insert( string word, FilePointer record );
+  void insertHelper( Node * parent, Node * child );
+
+  void splitNoneLeaf();
+  void splitLeaf( Node * cur );
+  void splitRoot();
+
+  bool search( string word );  
+  Node * searchHelper( string word );
+  
+  Node * getRoot() { return root; };
+  void printAll(){ printAll(root); };
+  void printAll( Node * root );
+  void printAllKeys() { printAllKeys( this->root ); };
+  void printAllKeys( Node * cur );
+  void printBetween( FilePointer start, FilePointer end );
 };
 
 #endif
