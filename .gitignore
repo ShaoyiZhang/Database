@@ -1,4 +1,6 @@
 ../.vscode/*
+reference/
+en_decode/
 build/
 data/
 # ignore the gigantic datafile
