@@ -1,5 +1,5 @@
-#ifndef TREE_NODE_H_
-#define TREE_NODE_H_
+#ifndef NODE_H_
+#define NODE_H_
 
 #include <iostream>
 #include <vector>
@@ -9,14 +9,18 @@ using namespace std;
 const int M = 5;   // num of max pointers to next level
 const int L = 3;   // num of max profiles
 
+// #ifdef USE_EXPORT_KEYWORD
+// export
+// #endif
+// template<class T>
 class Node{
- private:
+private:
   vector< string > keys;
   vector< Node * > children;
   bool isLeaf;
   // int occupancy;
   // int capacity;
-  vector< Node * > parent;
+  Node * parent;
   
   // the following fields are only useful in leaf node
   vector< FilePointer > filePointers; // only useful in leaf nodes  
@@ -26,10 +30,10 @@ class Node{
  public:
   Node();
   // constructer for root
-  Node( string word, FilePointer fp );  
+  Node( FilePointer fp );  
   //constructor for a leaf
-  Node( string word, bool isLeaf );
-  Node( string word, FilePointer fp, bool isLeaf );  
+  Node( FilePointer fp, bool isLeaf );
+  // Node( FilePointer fp, bool isLeaf );  
   // Node( string word );
 
   ~Node(){};
@@ -37,34 +41,35 @@ class Node{
   // Node(Node ** arrayOfNodes, int size);
 
   bool GetIsLeaf() const { return isLeaf; }
-  void SetIsLeaf( bool value ){ isLeaf = value; }
+  void SetIsLeaf( bool isLeaf ){ isLeaf = isLeaf; }
   void InsertLeaf( string name, int index, int endPos );
-
+  bool IsContain( FilePointer record );
   // int GetCapcity() const { return this->capacity; };
   // int GetOccupancy() const { return this->occupancy; };
 
   string GetKeyAt( int index ) const { return keys[index]; };
   void SetKeyAt( int index, string key ) { this->keys[index] = key; };
   
-  int IndexOfKey(string key) const;
-  int GetValueAt(int index) { return this->values[index]; };
-  void SetValueAt(int index, int value) { this->values[index]=value; };
-  Node* GetParent() { return parent; };
+  int IndexOfKey( string key );
+  int IndexOfFilePointer( string word );
+  FilePointer GetFPAt( int index ) const { return this->filePointers[index]; };
+  void SetFPAt(int index, FilePointer fp) { this->filePointers[index] = fp; };
+  Node* GetParent() const { return parent; };
   void SetParent(Node* parent) { this->parent=parent; };
-  void IncrOccupancy() { occupancy++; };
-  Node* GetNextLevel( string key ) const;
-  int IndexOfChild( string key ) const;
-  Node* Add(Node* child,Node* root);
-  Node* Add(string key, int value, Node* root);
-  vector< Node * > * GetChildren() { return children; };
+  // void IncrOccupancy() { occupancy++; };
+  vector< Node * > * GetNextLevel( string key );
+  int IndexOfChild( string key );
+  Node* Add( Node* child, Node* root);
+  Node* Add(string key, FilePointer fp, Node* root);
+  vector< Node * > * GetChildren() { return &children; };
   void SetChildrenAt(int index, Node* child){ this->children[index] = child; };
   Node* GetNext(){ return next; };
   Node* GetPrevious(){ return previous; };
   void SetNext(Node* next){ this->next = next; };
   void SetPrevious(Node* previous){ this->previous = previous; };
-  // Node SplitNoneLeaf( Node* root);
-  // Node SplitRoot( Node* root);
-  // Node SplitLeaf( Node* root);
+  Node * SplitNoneLeaf( Node* root);
+  Node * SplitRoot( Node* root);
+  Node * SplitLeaf( Node* root);
 };
 
 /*

@@ -1,30 +1,60 @@
 #include "Node.h"
-
+// #ifdef USE_EXPORT_KEYWORD
+// export
+// #endif
+// template<class T>
 // constructor for root node
-Node::Node( string word, FilePointer fp ) : isLeaf( false ), previous( nullptr ),
-                                                      occupancy( 1 ), capacity( M ) {
-  this->keys.push_back( word );
-  Node * newLeaf = new Node( word, fp, true );
-  this->nextLevel.push_back( newLeaf );
+Node::Node( FilePointer fp ) : isLeaf( false ), previous( nullptr ), next( nullptr ) {
+  this->keys.push_back( fp.GetWord() );
+  Node * newLeaf = new Node( fp, true );
+  this->children.push_back( newLeaf );
 }
 
 // // constructor for leaf node
 // // in
-Node::Node( string word,FilePointer fp, bool isLeaf ) : isLeaf( isLeaf ) {
-   this->keys.push_back( word );
-   // this->isLeaf = true;
-   this->filePointers.push_back( fp );
+Node::Node( FilePointer fp, bool isLeaf ) : isLeaf( isLeaf ), previous( nullptr ), next( nullptr ) {
+  cout << "new leaf\n";
+  this->keys.push_back( fp.GetWord() );
+  this->filePointers.push_back( fp );
 }
 
 // return the index of a given key in the keys array
 // if name is NOT present in the array, return -1
-int Node::IndexOfKey(string key) const{
+int Node::IndexOfKey(string key) {
     int index = 0;
-    for (int i = 0; i < occupancy; i++){
+    for (int i = 0; i < this->children.size(); i++){
         if (key>=keys[i])
             index++;
     }
     return index;
+}
+
+bool Node::IsContain( FilePointer record ) {
+  // if ( std::binary_search ( children.cbegin(), 
+  //                           children.cend(), 
+  //                           record, 
+  //                           TComparator) ) {
+  for ( int i = 0; i < this->children.size(); i++ ) {
+    if ( this->filePointers[i] == record ) {
+      return true;
+    }
+  }
+  cout << "not contain " << record.GetWord() << endl;
+  return false;
+
+}
+
+int Node::IndexOfFilePointer( string word ) {
+  cout << "IndexOfFilePointer: children size is " << this->keys.size() << ", ";
+  for ( int i = 0; i < this->keys.size(); i++ ) {
+    cout << i << " ";
+    if ( this->keys[i] == word ) {
+      cout << endl;
+      return i;
+    }
+  }
+  cout << "not contain " << word << endl;
+  return -1;
 }
 
 // Node::~Node()
@@ -89,18 +119,20 @@ int Node::IndexOfKey(string key) const{
 
 // returns a pointer to next level
 // the pointer may point to either InternalNode or LeafNode
-vector< Node * > * Node::GetNextLevel( string key ) const {
+
+vector< Node * > * Node::GetNextLevel( string key ) {
   if ( this->isLeaf ) {
     return NULL;
   }
-  return this->children[IndexOfChild( key )];
+  // return this->children[IndexOfChild( key )];
+  return &this->children;
 }
 
 // A function for InternalNode (Road map)
 // return the index of the pointer which lead us to next level
-int Node::IndexOfChild( string key ) const {
+int Node::IndexOfChild( string key ) {
     int index = 0;
-    while ( index < children.size() && key >= keys[index] ) {
+    while ( index < this->children.size() && key > keys[index] ) {
         //cout << "capacity"<<this->GetCapcity()<<endl;
         index++;
     }
@@ -114,13 +146,13 @@ Node* Node::Add( Node* child, Node* root ){
   int index = this->IndexOfChild(child->keys[0]);
   // index++;
   child->SetParent( this );  
-  this->keys.push_back( child.GetKeyAt( 0 ) );
+  this->keys.push_back( child->GetKeyAt( 0 ) );
   this->children.push_back( child );
   int occupancy = this->keys.size();
-  for ( int i = index; i < size; i++ ) {
+  for ( int i = index; i < occupancy; i++ ) {
     // NOTE: need to verify correctness
-    swap( this->keys[i], this->keys[size - 1] );
-    swap( this->children[i + 1], this->children[size] );
+    swap( this->keys[i], this->keys[occupancy - 1] );
+    swap( this->children[i + 1], this->children[occupancy] );
   }
   // for ( int i = this->GetChildren().size() - 1; i >= index; i-- ) {
   //     keys[i]=keys[i-1];
@@ -147,7 +179,7 @@ Node* Node::Add( Node* child, Node* root ){
 Node* Node::Add( string key, FilePointer fp, Node* root){
   int index = this->IndexOfKey(key);
   this->filePointers.push_back( fp );
-  int occupancy = this->filePointers.size();
+  int size = this->filePointers.size();
   for ( int i = index; i < size; i++ ) {
     // NOTE: need to verify correctness
     swap( this->filePointers[i], this->filePointers[size - 1] );
@@ -161,7 +193,7 @@ Node* Node::Add( string key, FilePointer fp, Node* root){
     // this->SetKeyAt(index, key);
     // values[index]=value;
     // occupancy ++;
-  if ( occupancy > M ){
+  if ( size > M ){
     Node * temp = SplitLeaf(root);
     if (temp) {
       return temp;
@@ -179,6 +211,8 @@ Node* Node::Add( string key, FilePointer fp, Node* root){
   4. return R1 to update the pointer address in B+ tree
 */
 Node * Node::SplitRoot(Node* root){
+  return nullptr;
+  /*
   Node * latterHalf = new Node( false );
   int middle = ceil(static_cast<double>(M)/2);
   // for now, occupancy = 6 = capacity = M
@@ -204,8 +238,8 @@ Node * Node::SplitRoot(Node* root){
     latterHalf->children[index]->SetParent(latterHalf);
     index++;
     children[i]=NULL;
-    latterHalf->occupancy++;
-    this->occupancy--;
+    // latterHalf->occupancy++;
+    // this->occupancy--;
   }
   Node* newRoot = new Node(false);
   Node* temp = latterHalf;
@@ -220,10 +254,12 @@ Node * Node::SplitRoot(Node* root){
   latterHalf->SetParent(newRoot);
   newRoot->IncrOccupancy();
   newRoot->IncrOccupancy();
-  return newRoot;
+  return newRoot;*/
 }
 
 Node* Node::SplitNoneLeaf(Node* root){
+  return nullptr;
+  /*
   Node* latterHalf = new Node(false);
   int middle = ceil(static_cast<double>(M)/2);
   int index = 0;
@@ -250,10 +286,12 @@ Node* Node::SplitNoneLeaf(Node* root){
   Node* temp = this->GetParent()->Add(latterHalf,root);
   if (temp!=NULL)
       root = temp;
-  return root;
+  return root;*/
+
 }
 
 Node* Node::SplitLeaf(Node* root){
+  /*
   Node* newLeaf = new Node(true);
   for (int i = L; i >= ceil(static_cast<double>(L)/2); i--){
       // copy latterHalf(index 2,3) to new leaf
@@ -265,7 +303,7 @@ Node* Node::SplitLeaf(Node* root){
   // this->next might be 0x646576697265442f
   // this->previous might be 0x65646f63582f0009
   // should not happen since we initialize all nodes' next and previous to NULL at the first place
-  if (this->next!=NULL/*&&this->next->keys[0]!=""*/)
+  if (this->next!=NULL ) //&&this->next->keys[0]!="")
       this->next->SetPrevious(newLeaf);
   newLeaf->next = this->next;
   newLeaf->parent = this->parent;
@@ -285,17 +323,17 @@ Node* Node::SplitLeaf(Node* root){
       root = newRoot;
       newRoot->SetChildrenAt(0, temp);
       temp->SetParent(root);
-      newRoot->IncrOccupancy();
+      // newRoot->IncrOccupancy();
       root->Add(newLeaf, this);
   }
-  return root;
+  return root;*/
   // Add function automatically split parent if necessary
 }
 
-void Node::Print(){
-  if (IsLeaf()){
-      for (int i = 0; i < this->occupancy; i++){
-          cout << "Key: "<< this->keys[i] << " Value: " << this->values[i] << endl;
-      }
-  }
-}
+// void Node::Print(){
+//   /*if (IsLeaf()){
+//       for (int i = 0; i < this->occupancy; i++){
+//           cout << "Key: "<< this->keys[i] << " Value: " << this->values[i] << endl;
+//       }
+//   }*/
+// }

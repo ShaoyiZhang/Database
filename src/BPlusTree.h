@@ -1,32 +1,40 @@
-#ifndef _BTREEE_H_
-#define _BTREEE_H_
+#ifndef _BPLUSTREEE_H_
+#define _BPLUSTREEE_H_
 
 #include <iostream>
+#include "Node.h"
+#include <utility>
 using namespace std;
 
-extern int M;
-extern int L;
-
-
+extern const int M;
+extern const int L;
 
 // BTree has a root node which is of type InternalNode
 // The children ptrs of root might be LeafNode AND InternalNode
-class BTree{
+// #ifdef USE_EXPORT_KEYWORD
+// export
+// #endif
+// template<class T>
+class BPlusTree{
 private:
-  Node* root;
+  Node * root;
   int count;
 public:
-BTree():root(new Node(true)),count(0){};
+  // BTree():root(new Node(true)),count(0){};
+  BPlusTree();
+  BPlusTree( FilePointer record );
+  ~BPlusTree();
   int GetCount(){ return count; };
-  void Insert(string key,int value);
-  Node* SearchHelper(string key, Node* current) const;
-  Node* GetRoot(){ return root; };
-  bool Search(string key) const;
-  Node* InsertHelper(string key, Node* current);
+  bool IsRoot( Node * cur ) const { return cur == root; }
+  void Insert( FilePointer record );
+  Node * SearchHelper( string word );
+  pair< Node *, int > Search( string word );  
+  Node * GetRoot() const { return root; };
+  Node * InsertHelper( FilePointer record, Node * cur );
   void PrintAll(){ PrintAll(root); };
-  void PrintAll(Node* root);
-  void PrintAllKeys(Node* root);
-  void PrintBetween(string start, string end);
+  void PrintAll( Node * root );
+  void PrintAllKeys( Node * root );
+  void PrintBetween( FilePointer start, FilePointer end );
 };
 
 #endif
