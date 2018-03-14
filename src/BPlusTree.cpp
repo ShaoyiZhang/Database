@@ -70,6 +70,7 @@ bool BPlusTree::search( string word ) {
 
 // insert a newly splitted node(child) to its parent(this)
 void BPlusTree::insertHelper( Node * parent, Node * child ) {
+  cout << "insert helper\n";
   int index = parent->indexOfChild( child->getKeyAt(0) );
   // NoneLeafNode case
   index++;
@@ -97,10 +98,10 @@ void BPlusTree::insertHelper( Node * parent, Node * child ) {
   // return NULL;
 }
 void BPlusTree::splitRoot() {
-
+  cout << "split root!\n";
 }
 void BPlusTree::splitNoneLeaf() {
-
+  cout << "split non leaf!\n";
 }
 
 void BPlusTree::splitLeaf( Node * cur ) {
@@ -108,12 +109,13 @@ void BPlusTree::splitLeaf( Node * cur ) {
   Node * newLeaf = new Node(true, cur );
   assert( cur->size() == L + 1 );
   int leftBound = ceil(static_cast<double>(L)/2);
-
+  cout << "split leaf left bound " << leftBound << endl;
   for (int i = leftBound; i <= L; i++){
     // copy latterHalf(index 2,3) to new leaf
     newLeaf->appendKey( cur->getKeyAt( i ) );
     newLeaf->appendValue( cur->getFPAt( i ) );
   }
+  cout << "split leaf copy phase pass\n";
   // retain the linked list structure of leaf nodes to support range query
   if ( cur->getNext() != nullptr ) { //&&this->next->keys[0]!="")
     cur->getNext()->setPrevious( newLeaf );
@@ -122,6 +124,7 @@ void BPlusTree::splitLeaf( Node * cur ) {
   newLeaf->setParent( cur->getParent() );
   newLeaf->setPrevious( cur );
   cur->setNext( newLeaf );
+  cout << "split leaf linked list reorder pass\n";
   // insert new leaf to parent (which must be none-leaf)
   // if this is not root
   if( cur != root ) {
@@ -162,6 +165,7 @@ void BPlusTree::insert( string word, FilePointer record ){
   cout << "before insert key value\n";
   if ( candidate->size() == 0 || candidate->size() == index ) {
     // just use push_back
+    cout << "append\n";
     candidate->appendKey( word );
     candidate->appendValue( record );    
   } else {

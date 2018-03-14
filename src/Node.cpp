@@ -31,13 +31,13 @@ Node::Node( bool isLeaf, Node * parent ) : isLeaf( isLeaf ), previous( nullptr )
 // if name is NOT present in the array, return -1
 int Node::indexOfKey(string key) {
   int index = 0;
-  cout << this->size() << endl;
+  // cout << this->size() << endl;
   for (int i = 0; i < this->size(); i++){
-    cout << " index of key " << i << endl;
+    // cout << " index of key " << i << endl;
     if ( key >= keys[i]) {
       index++;
     }
-    cout << " index of key " << i << "pass" << endl;    
+    // cout << " index of key " << i << "pass" << endl;    
   }
   return index;
 }
@@ -73,9 +73,9 @@ bool Node::isContain( FilePointer record ) {
 int Node::indexOfFilePointer( string word ) {
   cout << "IndexOfFilePointer: key size is " << this->keys.size() << "\n ";
   for ( int i = 0; i < this->keys.size(); i++ ) {
-    cout << "index fp: " << i << " ";
+    // cout << "index fp: " << i << " ";
     if ( this->keys[i] == word ) {
-      cout << "pass" << endl;
+      // cout << "pass" << endl;
       return i;
     }
   }

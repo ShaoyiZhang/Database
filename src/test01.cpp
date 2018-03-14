@@ -28,9 +28,9 @@ int main(int argc,char* argv[]) {
   bpt.insert( word3, fp );
   cout << "ok3\n\n";  
   bpt.insert( word4, fp );
-  cout << "ok4\n\n";  
+  cout << "ok4\n\n";
   bpt.insert( word5, fp );
-  cout << "cur root key size: " << bpt.getRoot()->size() << endl;
+  cout << "cur root child size: " << bpt.getRoot()->getChildren()->size() << endl;
   bpt.insert( word6, fp );
   cout << "cur root key size: " << bpt.getRoot()->size() << endl;  
   bpt.insert( word7, fp );
