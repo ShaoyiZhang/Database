@@ -1,12 +1,23 @@
 #include "IndexLineObj.h"
 
-IndexLineObj::IndexLineObj(char& word, string& pagePtr, bool isLocked = false, size_t prev, size_t next){
+IndexLineObj::IndexLineObj(char& word, string& pagePtr, bool isLocked = false/*, size_t prev, size_t next*/){
         // this.word = word;
         this.hashVal = hash<string>{} (word); // use c++11!!
-        this.prevPairLoc = prev;
-        this.nextPairLoc = next;
+        // this.prevPairLoc = prev;
+        // this.nextPairLoc = next;
         this.isLocked = isLocked;
         this.pagePtr = pagePtr;
+        // create file pagePtr
+}
+
+IndexLineObj::IndexLineObj(size_t& hashVal, string& pagePtr, bool isLocked = false/*, size_t prev, size_t next*/){
+        // this.word = word;
+        this.hashVal = hashVal;
+        // this.prevPairLoc = prev;
+        // this.nextPairLoc = next;
+        this.isLocked = isLocked;
+        this.pagePtr = pagePtr;
+        // create file pagePtr
 }
 
 void IndexLineObj::print() {

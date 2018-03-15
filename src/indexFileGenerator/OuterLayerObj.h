@@ -16,9 +16,8 @@ private:
 public:
     OuterLayerObj(const char& fileName, size_t pageSize);
     ~OuterLayerObj();
-    void append(IndexLineObj& thisLine);
     vector<string> findPages(size_t& hashValue); // return a list of file names (pages) of docID lists of the hash value (word)
-    string addToListPage(size_t& hashValue, size_t& pageSize, size_t docID);
+    void append(size_t& hashValue, size_t& docID);
 };
 
 #endif

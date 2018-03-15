@@ -72,11 +72,12 @@ IndexFileObj::IndexFileObj(char* dataFileName, char* indexFileName, size_t pageS
                         cout << hashedVal << " " << word << endl;
 
                         // call OuterLayerObj function to add doc ID to word's doc-list-page
-
+                        indexObjPtr->append(hashVal, docID);
+                        
                         // iteration
                         word = strtok (NULL, " ,.-!()");
                 }
-                // delete [] cThisLine; [discarded]
+                // delete [] cThisLine; [discarded method]
                 this.lineReached++;
         }
 }

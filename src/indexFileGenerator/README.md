@@ -25,14 +25,3 @@
     - secondary layer (multiple files on disk):
 
         - each file is essentially a "page", which consists a list of document IDs
-
-
-
-***
-## Dependencies
-
-- It borrows FilePointer from file.h, ...
-
-## some useful codes
-
-int tempVal = stoi(tempraryStr.substr(0, 8), nullptr, 2);
