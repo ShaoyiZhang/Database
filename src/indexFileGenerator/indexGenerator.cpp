@@ -4,10 +4,9 @@
 #include <string>
 #include <cstring> // for strtok
 #include "IndexGenerator.h"
-#include "File.h"
 
 /*
-   notes to myself: upper/lower case
+   notes to myself: upper/lower case -- already dealt
                   non-alphabetic    http://www.cplusplus.com/reference/cstring/strtok/ <--- xxx, yyy
                                     http://www.cplusplus.com/reference/cctype/isalpha/ <--- ! !
                                     // special cases: gluten-free, it 's, i 'm, : )
@@ -33,13 +32,13 @@ string ToString(T t) {
 }
 
 // IndexLineObj
-IndexLineObj::IndexLineObj(char& word, FilePointer& fptr, bool isLocked = false, size_t prev, size_t next){
+IndexLineObj::IndexLineObj(char& word, string& pagePtr, bool isLocked = false, size_t prev, size_t next){
         // this.word = word;
         this.hashVal = hash<string>{} (word); // use c++11?
         this.prevPairLoc = prev;
         this.nextPairLoc = next;
         this.isLocked = isLocked;
-        this.ptr = fptr;
+        this.pagePtr = pagePtr;
 }
 
 void IndexLineObj::print() {
