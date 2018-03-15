@@ -18,6 +18,7 @@ using namespace std;
 
 class FilePointer {
 public:
+  FilePointer();
   FilePointer( const char *filename, long int offset, int nDupKeys );
   FilePointer( string filename, long int offset, int nDupKeys  );
   // Test only

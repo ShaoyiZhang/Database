@@ -1,5 +1,10 @@
 #include "File.h"
+// FilePointer::FilePointer() {
+//   filename = nullptr;
+//   pageID = -1;
+//   offset = -1;
 
+// }
 FilePointer::FilePointer( const char * filename, long int offset, int nDupKeys ) {
   this->filename = strdup( filename );
   this->offset = offset;
