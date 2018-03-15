@@ -7,8 +7,8 @@
 #include <math.h> // ceil
 using namespace std;
 
-extern const int M;
-extern const int L;
+extern const int M; // num of max pointers to next level
+extern const int L; // num of max profiles
 
 // BTree has a root node which is of type InternalNode
 // The children ptrs of root might be LeafNode AND InternalNode
@@ -29,14 +29,14 @@ public:
   bool isRoot( Node * cur ) const { return cur == root; }
 
   void insert( string word, FilePointer record );
-  void insertHelper( Node * parent, Node * child );
-
-  void splitNoneLeaf();
+  void insert( Node * parent, Node * child );
+  Node * insertHelper( string word ); // find internal node candidate
+  void splitNoneLeaf( Node * cur );
   void splitLeaf( Node * cur );
-  void splitRoot();
+  void splitRoot( Node * cur );
 
   bool search( string word );  
-  Node * searchHelper( string word );
+  Node * searchHelper( string word ); // find leaf node candidate
   
   Node * getRoot() { return root; };
   void printAll(){ printAll(root); };
@@ -44,6 +44,9 @@ public:
   void printAllKeys() { printAllKeys( this->root ); };
   void printAllKeys( Node * cur );
   void printBetween( FilePointer start, FilePointer end );
+
+  void levelOrder( Node * );
+  void bfs( Node* cur, vector<vector<string>> &res, int depth);
 };
 
 #endif
