@@ -15,8 +15,9 @@ bool fileExist (const string& name) {
     return f.good();
 }
 
-void addDocID(const string& name){
+void addDocID(const string& name, size_t& docID){
     // TODO
+
 }
 
 // https://www.codeproject.com/Articles/9016/Quick-and-Dirty-Series-C-FileSize-function
@@ -27,7 +28,7 @@ size_t fileSize(const char* sFileName)
   f.open(sFileName, ios_base::binary | ios_base::in);
   if (!f.good() || f.eof() || !f.is_open()) { return 0; }
   f.seekg(0, ios_base::beg);
-  std::ifstream::pos_type begin_pos = f.tellg();
+  ifstream::pos_type begin_pos = f.tellg();
   f.seekg(0, ios_base::end);
   return static_cast<size_t>(f.tellg() - begin_pos);
 }
@@ -64,13 +65,13 @@ void OuterLayerObj::append(size_t& hashValue, size_t& docID){
     size_t lastPageSize = fileSize(pages.back();
     if (!pages.empty() && lastPageSize <= this.pageSize && lastPageSize >= 0) {
         // if pages found and the last page is not full, just append docID to it
-        addDocID(pages.back(),dicID);
+        addDocID(pages.back(),docID);
 
     } else {
         // otherwise, create new line in OuterLayer and new file page
         string pageAddress = ToString<size_t>(hashValue) + "." + ToString<size_t>(pages.size());
         IndexLineObj newLine = new IndexLineObj(hashValue, pageAddress);
-        addDocID(pageAddress, dicID);
+        addDocID(pageAddress, docID);
     }
 
 }

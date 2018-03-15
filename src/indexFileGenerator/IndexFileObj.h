@@ -18,7 +18,6 @@ public:
     ~IndexFileObj();
     getIndexFile() {return indexFileName};
     merge(char* anotherIndex);
-
 };
 
 #endif
