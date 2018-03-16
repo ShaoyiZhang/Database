@@ -34,25 +34,20 @@ size_t fileSize(const char* sFileName)
 }
 
 // OuterLayerObj
-OuterLayerObj::OuterLayerObj(const char& fileName, size_t pageSize){
-        this.fileName = fileName;
-        this.hashValues.clear(); // just in case?
-        this.nextLineNum = 2; // first line is reserved for metaData
-        this.pageSize = pageSize;
+OuterLayerObj::OuterLayerObj(size_t pageSize){
+        // this.fileName = fileName;
+        this->hashValues.clear(); // just in case?
+        // this.nextLineNum = 2; // first line is reserved for metaData
+        this->pageSize = pageSize;
 }
 
-vector<string> OuterLayerObj::findOffsets(size_t& hashValue){
-    // given a hashValue, return a list of pages which store docIDs for such hash value
-    vector<string> pageList;
-    string hvStr = ToString<size_t>(hashValue);
-    size_t offset = 0; // to start with
-    string name = hvStr + ".0";
-    while(fileExist(name)) {
-        pageList.push_back(name);
-        offset++;
-        name = hvStr + "." + ToString<size_t>(offset);
-    }
-    return pageList;
+OuterLayerObj::~OuterLayerObj(){
+    this->hashValues.clear();
+}
+
+vector<unsigned long> OuterLayerObj::findOffsets(size_t hashValue){
+    // given a hashValue, return a list of offsets where docIDs are stored for such hash value
+
 }
 
 
