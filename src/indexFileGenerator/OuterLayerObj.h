@@ -5,20 +5,16 @@
 #include "IndexLineObj.h"
 using namespace std;
 
-
-
 class OuterLayerObj {
 private:
-    char* fileName;
-    vector<size_t> hashValues; // hash value after hash value, size = # lines of index file - 1 (metadata)
-    size_t nextLineNum;
-    size_t pageSize;
+    vector<size_t> hashValues; // add each hash value to a vector at first occurences
+    // then the index of each element + 2 = line number
+    // http://www.dreamincode.net/forums/topic/36630-find-index-of-vector-element/
+    unsigned long pageSize;
 public:
-    OuterLayerObj(const char& fileName, size_t pageSize);
-    ~OuterLayerObj();
-    void append(IndexLineObj& thisLine);
-    vector<string> findPages(size_t& hashValue); // return a list of file names (pages) of docID lists of the hash value (word)
-    string addToListPage(size_t& hashValue, size_t& pageSize, size_t docID);
+    OuterLayerObj(unsigned long pageSize);
+    vector<unsigned long> findOffsets(size_t& hashValue); // return a list of offsets where lists of doc ids are
+    void append(size_t& hashValue, unsigned long& docID); // many things happen here
 };
 
 #endif
