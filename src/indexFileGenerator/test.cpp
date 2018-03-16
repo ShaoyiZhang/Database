@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-    #include <fstream>
+#include <fstream>
 using namespace std;
 
 // int FileSize(const char* sFileName)

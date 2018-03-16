@@ -41,11 +41,7 @@ OuterLayerObj::OuterLayerObj(const char& fileName, size_t pageSize){
         this.pageSize = pageSize;
 }
 
-OuterLayerObj::~OuterLayerObj(){
-        this.hashValues.clear();
-}
-
-vector<string> OuterLayerObj::findPages(size_t& hashValue){
+vector<string> OuterLayerObj::findOffsets(size_t& hashValue){
     // given a hashValue, return a list of pages which store docIDs for such hash value
     vector<string> pageList;
     string hvStr = ToString<size_t>(hashValue);
