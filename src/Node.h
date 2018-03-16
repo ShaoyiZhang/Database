@@ -68,8 +68,10 @@ private:
   
   // used in leaf node 
   void insertKeyValuePair( string word, FilePointer fp );
+  void removeKeyValuePairAt( int index );
 
-  // used in internal node 
+  // used in internal node
+  void removeChildAt( int index );
   void insertKey( string word );
   int indexOfKey( string key );
   int indexOfFilePointer( string word );
@@ -87,7 +89,7 @@ private:
   void setChildAt(int index, Node* child){ this->children[index] = child; };
   Node* getChildAt( int index ) { return this->children[index]; }
   Node* getNext(){ return next; };
-  Node* getPrevious(){ return previous; };
+  Node* getPrev(){ return previous; };
   void setNext(Node* next){ this->next = next; };
   void setPrevious(Node* previous){ this->previous = previous; }
 };

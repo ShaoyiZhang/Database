@@ -30,6 +30,7 @@ public:
 
   void insert( string word, FilePointer record );
   void insert( Node * parent, Node * child );
+  bool deleteNode( string word );
   Node * insertHelper( string word ); // find internal node candidate
   void splitNoneLeaf( Node * cur );
   void splitLeaf( Node * cur );

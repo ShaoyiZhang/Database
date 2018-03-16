@@ -13,7 +13,7 @@ int main(int argc,char* argv[]) {
   isTestEnabled.push_back(false);
   int count = 0;
   // BPlusTree bpt = BPlusTree( fp1 );
-  BPlusTree bpt = BPlusTree( );
+  BPlusTree bpt = BPlusTree();
   cout << "construction passed\n";
   // bpt.search( word1 );
   bpt.levelOrder( bpt.getRoot() );

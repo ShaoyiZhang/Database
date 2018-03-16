@@ -423,3 +423,55 @@ void BPlusTree::bfs( Node* cur, vector<vector<string>> &res, int depth) {
     }
   }
 }
+
+bool BPlusTree::deleteNode( string word ) {
+  // use insert helper to find the parent of leaf node
+  Node * parent = insertHelper( word );
+  int index = parent->indexOfChild( word );
+  Node * leaf = parent->getChildAt( index );
+  if ( leaf == nullptr ) {
+    // this word does NOT exist
+    return false;
+  }
+  // delete key-value pair from leaf
+  leaf->removeKeyValuePairAt( indexOfKey( word ) ); // size decrement inside this function
+  Node * left = leaf->getPrev();
+  Node * right = leaf->getNext();
+
+  if ( leaf->size() > L ) {
+    // the leaf still have enough key-value pair after deletion
+    // update key in parent(internal node) and we are done
+    parent->setKeyAt( parent->indexOfKey( leaf->getKeyAt(0) ) );
+  } else if ( left != nullptr ) {
+      if ( left->size() > L ) {
+        // borrow from left if left leaf contain enough key-value pair    
+        // copy entry to current node
+        leaf->insertKeyValuePair( left->getKeyAt( left->size() - 1 ), 
+                                  left->getFPAt( left->size() - 1 ) );
+        left->decrKeySize(); // delete entry from left node
+        parent->setKeyAt( parent->indexOfKey( leaf->getKeyAt(0) ) );
+      } else { 
+        // left sibling does NOT have enough key-val pair, merge with left 
+        // 1. move key-val pairs to left sibling
+        for ( int i = 0; i < leaf->size(); i++ ) {
+          left->insertKeyValuePair( leaf->getKeyAt( i ), left->getFPAt( i ) );
+        }
+        // 2. shift child pointers in parent node
+        parent->removeChildAt( index );
+      }    
+  } else if ( right != nullptr ) { // left == nullptr, first leaf node in last level
+      if ( right->size() > L ) {
+        // borrow from right
+        leaf->insertKeyValuePair( right->getKeyAt( 0 ), 
+                                  right->getFPAt( 0 ) );
+        right->decrKeySize(); // delete entry from left node
+        parent->setKeyAt( parent->indexOfKey( right->getKeyAt(0) ) );
+      } else {
+        // merge with right      
+      }
+  }
+
+  //   cerr << "case NOT covered in deletion\n";
+
+  return true;
+}
