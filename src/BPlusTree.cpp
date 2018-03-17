@@ -10,8 +10,8 @@ BPlusTree::BPlusTree(){
 }
 
 // root
-BPlusTree::BPlusTree ( FilePointer record ) {
-  Node * root = new Node( record );
+BPlusTree::BPlusTree ( string word, FilePointer record ) {
+  Node * root = new Node( word, record );
   this->root = root;
   count = 1;
 }
@@ -26,7 +26,7 @@ Node * BPlusTree::searchHelper( string word ) {
   if ( this->root == nullptr ) {
     // all elements in the tree has been deleted
     cerr << "empty tree\n";
-    return nullptr;//make_pair( nullptr, -1 );
+    return root;//make_pair( nullptr, -1 );
   }
   Node * cur = this->root;
   while ( cur->getIsLeaf() == false ) {
@@ -93,7 +93,7 @@ void BPlusTree::insert( Node * parent, Node * child ) {
   cerr << "insert (different signature)\n";
   this->levelOrder( child );
   // this->levelOrder( parent->getChildAt(0) );
-  this->levelOrder( parent->getParent() ); 
+  this->levelOrder( parent->getParent() );
   this->levelOrder( root ); 
   // cerr << parent->getChildAt(0);
   int index = parent->indexOfChild( child->getKeyAt(0) );
@@ -150,8 +150,9 @@ void BPlusTree::splitRoot( Node * cur ) {
   // create a new root
   Node * newRoot = new Node();
   newRoot->setIsLeaf( false );
-  newRoot->setChildAt(0, cur ); // insert current root to new root
+  newRoot->setChildAt( 0, cur ); // insert current root to new root
   newRoot->incrChildSize();
+  newRoot->setParent( nullptr );
   cur->setParent( newRoot );
   // this->levelOrder( newRoot );
   this->root = newRoot;  
@@ -184,7 +185,7 @@ void BPlusTree::splitNoneLeaf( Node * cur ) {
   cerr << endl;
   
   for ( int i = leftBound; i < M; i++ ) {
-    // move latterHalf(index 3,4,5 ) to new internal
+    // move latterHalf(index 3,4 ) to new internal
     cerr << " new key idx: " << i - leftBound << " new child idx: " << i - leftBound + 1
          << " old key idx: " << i << " old child idx: " << i + 1 << " key: " << cur->getKeyAt( i )<<"\n";
     newInternal->setChildAt( i - leftBound + 1, cur->getChildAt( i + 1 ) );
@@ -207,8 +208,14 @@ void BPlusTree::splitNoneLeaf( Node * cur ) {
       child->setParent( newInternal );
     }
   }
+
   cerr << "split internal move phase pass\n";
   cerr << "try insert splitted internal to parent\n";
+  cerr << "new root: " << cur->getParent() << " " << newInternal->getParent()->size() << " " 
+  << " key " << newInternal->getParent()->getKeyAt(0) << endl;
+  cerr << " childSize " << newInternal->getParent()->childSize() << endl;
+  cerr << "cur child size: " << cur->childSize() << " key size: " << cur->size() << endl;
+  cerr << "new internal child size: " << newInternal->childSize() << " key size: " << newInternal->size() << endl;  
   insert( cur->getParent(), newInternal );
 }
 
@@ -302,7 +309,7 @@ void BPlusTree::insert( string word, FilePointer record ){
   // TO DO: Tree empty
   if ( root == nullptr ) {
     cerr << "Empty tree\n";
-    this->root = new Node( record );
+    this->root = new Node( word, record );
     return;
   }
   // case none-empty tree
@@ -326,7 +333,7 @@ void BPlusTree::insert( string word, FilePointer record ){
     // assert( candidate != nullptr && candidate->getIsLeaf() == true );
 
     // create new leaf and insert 
-    Node * newLeaf = new Node( record, true, candidate );
+    Node * newLeaf = new Node( word, record, true, candidate );
     candidate->setChildAt( childIndex, newLeaf );
     candidate->incrChildSize();
     return;
@@ -423,8 +430,8 @@ void BPlusTree::bfs( Node* cur, vector<vector<string>> &res, int depth) {
     }
   }
 }
-
-bool BPlusTree::deleteNode( string word ) {
+/*
+bool BPlusTree::remove( string word ) {
   // use insert helper to find the parent of leaf node
   Node * parent = insertHelper( word );
   int index = parent->indexOfChild( word );
@@ -451,13 +458,7 @@ bool BPlusTree::deleteNode( string word ) {
         left->decrKeySize(); // delete entry from left node
         parent->setKeyAt( parent->indexOfKey( leaf->getKeyAt(0) ) );
       } else { 
-        // left sibling does NOT have enough key-val pair, merge with left 
-        // 1. move key-val pairs to left sibling
-        for ( int i = 0; i < leaf->size(); i++ ) {
-          left->insertKeyValuePair( leaf->getKeyAt( i ), left->getFPAt( i ) );
-        }
-        // 2. shift child pointers in parent node
-        parent->removeChildAt( index );
+        merge( leaf, left, true )
       }    
   } else if ( right != nullptr ) { // left == nullptr, first leaf node in last level
       if ( right->size() > L ) {
@@ -467,7 +468,8 @@ bool BPlusTree::deleteNode( string word ) {
         right->decrKeySize(); // delete entry from left node
         parent->setKeyAt( parent->indexOfKey( right->getKeyAt(0) ) );
       } else {
-        // merge with right      
+        // merge with right
+        merge();    
       }
   }
 
@@ -475,3 +477,25 @@ bool BPlusTree::deleteNode( string word ) {
 
   return true;
 }
+
+// // remove key-val from leaf and check constraint for leaf, borrow/merge if necessary
+// void removeLeaf( Node * leaf ) {
+
+// }
+// check constraint for internal node, merge borrow if needed
+
+
+void merge( Node * cur, Node * sibling, Node * parent, bool isLeft ) {
+  // left sibling does NOT have enough key-val pair, 
+  // then merge left sibling to current node 
+  // 1. move key-val pairs to left sibling
+  for ( int i = 0; i < leaf->size(); i++ ) {
+    sibling->insertKeyValuePair( leaf->getKeyAt( i ), left->getFPAt( i ) );
+  }
+  // 2. remove pointer for leaf node and shift other child pointers in parent node
+  parent->removeChildAt( index ); 
+  // 3. update key in parent and grandparent
+  parent->removeKeyAt( index );
+}
+
+*/

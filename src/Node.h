@@ -34,9 +34,9 @@ private:
  public:
   Node();
   // constructer for root
-  Node( FilePointer fp );  
+  Node( string word, FilePointer fp );  
   //constructor for a leaf
-  Node( FilePointer fp, bool isLeaf, Node * parent );
+  Node( string word, FilePointer fp, bool isLeaf, Node * parent );
   Node( bool isLeaf, Node * parent );
   // Node( FilePointer fp, bool isLeaf );  
   // Node( string word );
@@ -72,6 +72,7 @@ private:
 
   // used in internal node
   void removeChildAt( int index );
+  void removeKeyAt( int index );
   void insertKey( string word );
   int indexOfKey( string key );
   int indexOfFilePointer( string word );

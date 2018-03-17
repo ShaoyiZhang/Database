@@ -23,14 +23,14 @@ private:
 public:
   // BTree():root(new Node(true)),count(0){};
   BPlusTree();
-  BPlusTree( FilePointer record );
+  BPlusTree( string word, FilePointer record );
   ~BPlusTree();
   int getCount(){ return count; };
   bool isRoot( Node * cur ) const { return cur == root; }
 
   void insert( string word, FilePointer record );
   void insert( Node * parent, Node * child );
-  bool deleteNode( string word );
+  bool remove( string word );
   Node * insertHelper( string word ); // find internal node candidate
   void splitNoneLeaf( Node * cur );
   void splitLeaf( Node * cur );

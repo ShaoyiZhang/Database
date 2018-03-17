@@ -18,7 +18,7 @@ Node::Node() {
   nChild = 0;
 }
 // constructor for root node with fp
-Node::Node( FilePointer fp ) : isLeaf( false ), previous( nullptr ), 
+Node::Node( string word, FilePointer fp ) : isLeaf( false ), previous( nullptr ), 
                               next( nullptr ), parent( nullptr ) {
   cout << "root cons, size 1\n";
   for ( int i = 0; i < M; i++ ) {
@@ -29,11 +29,11 @@ Node::Node( FilePointer fp ) : isLeaf( false ), previous( nullptr ),
   }
   for ( int i = 0; i < L; i++ ) {
     filePointers[i] = nullptr;
-  } 
-  this->keys[0] = new string( fp.getWord() );
+  }
+  this->keys[0] = new string( word );
   nKeys = 1;
   // insert newLeaf to 2nd slot since < goes to left child and >= goes to right
-  Node * newLeaf = new Node( fp, true, this );
+  Node * newLeaf = new Node( word, fp, true, this );
   this->children[0] = nullptr;
   this->children[1] = newLeaf;
   nChild = 2;
@@ -60,7 +60,7 @@ Node::Node( bool isLeaf,
 }
 
 // constructor for leaf node
-Node::Node( FilePointer fp, bool isLeaf, 
+Node::Node( string word, FilePointer fp, bool isLeaf, 
             Node * parent ) : isLeaf( isLeaf ), previous( nullptr ),
                               next( nullptr ), parent( parent ) {
   for ( int i = 0; i < M; i++ ) {
@@ -73,7 +73,7 @@ Node::Node( FilePointer fp, bool isLeaf,
     filePointers[i] = nullptr;
   } 
   cout << "new leaf\n";
-  this->keys[0] = new string( fp.getWord() );
+  this->keys[0] = new string( word );
   this->filePointers[0] = new FilePointer( fp ); // copy constructor
   nKeys = 1;
   nChild = 0; // leaf node 
@@ -203,4 +203,11 @@ void Node::removeChildAt( int index ) {
     children[i] = children[i+1];
   }
   nChild--;
+}
+
+void Node::removeKeyAt( int index ) {
+  for ( int i = index; i < nKeys - 1; i++ ) {
+    keys[i] = keys[i+1];
+  }
+  nKeys--;
 }
