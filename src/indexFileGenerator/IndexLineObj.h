@@ -12,7 +12,7 @@ private:
     size_t hashVal;     // (1) hash(word)
     // unsigned long prevLoc; // (2) previous pair of the same word's location, starting from 1, 0 means no prev/next
     // unsigned long nextLoc; // (3) next pair of the same word's location
-    vector<unsigned long> offsets;     // (4) bit-offsets
+    vector<unsigned long> offsets;     // (4) bit-offsets ==> LINE OFFSET INSTEAD
     // bool isLocked;      // (5) concurrency (0: not locked), implement later
 public:
     IndexLineObj(char* word, /*unsigned long& prev, unsigned long& next,*/ bool isLocked = false);
@@ -22,7 +22,7 @@ public:
     // void setNext(unsigned long next) {this.nextLoc = next;};
     // unsigned long getPrev() {return this.prevLoc};
     // unsigned long getNext() { return this.nextLoc};
-    void print();       // output to console for debugging, OuterLayerObj controls writing process
+    // void print();       // output to console for debugging, OuterLayerObj controls writing process
     string format();
     // char* toBinFile(const IndexLineObj& pair); // return binary format, implement later
 };

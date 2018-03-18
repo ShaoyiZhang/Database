@@ -10,10 +10,10 @@ string ToString(T t) {
         return ss.str();
 }
 
-bool fileExist (const string& name) {
-    ifstream f(name.c_str());
-    return f.good();
-}
+// bool fileExist (const string& name) {
+//     ifstream f(name.c_str());
+//     return f.good();
+// }
 
 void addDocID(const string& name, size_t& docID){
     // TODO
@@ -36,18 +36,18 @@ size_t fileSize(const char* sFileName)
 // OuterLayerObj
 OuterLayerObj::OuterLayerObj(size_t pageSize){
         // this.fileName = fileName;
-        this->hashValues.clear(); // just in case?
+        this->hashVal_LineNum.clear(); // just in case?
         // this.nextLineNum = 2; // first line is reserved for metaData
         this->pageSize = pageSize;
 }
 
 OuterLayerObj::~OuterLayerObj(){
-    this->hashValues.clear();
+    this->hashVal_LineNum.clear();
 }
 
 vector<unsigned long> OuterLayerObj::findOffsets(size_t hashValue){
     // given a hashValue, return a list of offsets where docIDs are stored for such hash value
-
+    unsigned long matchLine =
 }
 
 

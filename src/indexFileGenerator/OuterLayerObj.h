@@ -10,10 +10,8 @@ class OuterLayerObj {
 private:
     // vector<size_t> hashValues; // add each hash value to a vector at first occurences
     // vector<unsigned long long> bitPos; // and note down their bit position (used for fseek)
-    unordered_map<size_t, unsigned long long> hash_bitPos; // hash_bitPos[hashVal] = bit location in the outer index
-    // then the index of each element + 2 = line number
-    // http://www.dreamincode.net/forums/topic/36630-find-index-of-vector-element/
-    unsigned long pageSize;
+    unordered_map<char*, unsigned long> hashVal_LineNum; // hash_bitPos[hashVal] = location (line#) in the outer index
+    unsigned long pageSize; // size of each "page"
 public:
     OuterLayerObj(unsigned long pageSize);
     ~OuterLayerObj();

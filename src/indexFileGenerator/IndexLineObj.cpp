@@ -23,6 +23,7 @@ IndexLineObj::IndexLineObj(char* word, /*unsigned long& prev, unsigned long& nex
         // this->isLocked = isLocked;
         offsets.clear(); // just in case
 }
+
 void IndexLineObj::addOffset(unsigned long offset) {
     // check for duplicates?
     this->offsets.push_back(offset);
@@ -39,22 +40,22 @@ void IndexLineObj::print() {
 }
 
 string IndexLineObj::format(){
-    string result = ToString<size_t>(this->hashVal);
+    string result(this->word);
     for (std::vector<unsigned long>::iterator it = this->offsets.begin() ; it != this->offsets.end(); ++it){
-            result += " " + to_string(*it);
+            result += "/t" + to_string(*it);
     }
     // cout << "[DEBUG] <" << result << "> to index file." << endl;
     result += "\n";
     return result;
 }
-
-int main(){
-    char a [] = "abc";
-    IndexLineObj* i = new IndexLineObj(a);
-    i->addOffset(100000);
-    i->addOffset(1234);
-    i->addOffset(2345);
-    i->addOffset(1000000000000);
-    cout << i->format();
-
-}
+//
+// int main(){
+//     char a [] = "abc";
+//     IndexLineObj* i = new IndexLineObj(a);
+//     i->addOffset(100000);
+//     i->addOffset(1234);
+//     i->addOffset(2345);
+//     i->addOffset(5125332*10000);
+//     cout << i->format();
+//
+// }
