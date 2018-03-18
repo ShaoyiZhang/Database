@@ -3,6 +3,7 @@ reference/
 en_decode/
 src/indexFileGenerator/test*
 first*
+index
 build/
 data/
 # ignore the gigantic datafile

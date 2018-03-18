@@ -126,7 +126,7 @@ void buildIndex(const string& textFile, const string& indexFile, unsigned int pa
     }
 }
 
-void buildIndex_(const string& textFile, const string& indexFile, unsigned int pageSize){
+void buildIndex_discarded(const string& textFile, const string& indexFile, unsigned int pageSize){
     // cout << textFile << indexFile << pageSize << endl;
     // create new index file use fstream to open a file for reading and writing:
     fstream indexFileStream;
