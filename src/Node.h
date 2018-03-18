@@ -74,7 +74,7 @@ private:
   void removeChildAt( int index );
   void removeKeyAt( int index );
   void insertKey( string word );
-  void insertChild( Node * child );
+  void insertChild( Node * child, string key );
   int indexOfKey( string key );
   int indexOfFilePointer( string word );
   FilePointer * getFPAt( int index ) { return filePointers[index]; };

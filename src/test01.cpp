@@ -10,7 +10,7 @@ int main(int argc,char* argv[]) {
   string word1 = "AKey";
   FilePointer fp1 = FilePointer( "A", 10, 1, word1 );
   vector<bool> isTestEnabled;
-  isTestEnabled.push_back(true);
+  isTestEnabled.push_back(false);
   isTestEnabled.push_back(false);
   isTestEnabled.push_back(true);
   int count = 0;
@@ -20,19 +20,21 @@ int main(int argc,char* argv[]) {
   // bpt.search( word1 );
   bpt.levelOrder( bpt.getRoot() );
   // string keyTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzA";
-  string keyTable = "QRS6TUVWX5YZaFG9HIJKL0MNOP8ghi3jkcdefABCDE1qrlmn4o2pbstuvw7xyz";
+  string keyTable = "SQRT6UVWX5YZaFG9HIJKL0MNOP8ghi3jkcdefABCDE1qrlmn4o2pbstuvw7xyz";
 
   if ( isTestEnabled[count] == true ) {
     cerr << "Test insertion in ascending order...";
-    for ( int i = 1; i < keyTable.size(); i++ ) {
+    for ( int i = 0; i < keyTable.size(); i++ ) {
       string word = keyTable.substr(i,1) + "key";
       FilePointer fp = FilePointer( keyTable.substr(i,1), 10, 1, keyTable.substr(i,1) );
       cerr << "======================\n";
       bpt.insert( word, fp );
       bpt.levelOrder( bpt.getRoot() );
+      bpt.printAll();
       assert( bpt.search( word ) == true );
       cerr << "ok" << i << endl << endl;
     }
+    bpt.printAll();        
   }
   count++;  
   if ( isTestEnabled[count] == true ) {
@@ -48,6 +50,7 @@ int main(int argc,char* argv[]) {
       bpt.levelOrder( bpt.getRoot() );
       cerr << "ok" << i << endl << endl;
     }
+    bpt.printAll();    
   }
   count++;
 
@@ -63,13 +66,13 @@ int main(int argc,char* argv[]) {
       cerr << "~~\n";
       wordList.push_back( line );
     }
-    sort(wordList.begin(), wordList.end() );
+    // sort(wordList.begin(), wordList.end() );
     cerr << wordList.size();
     cerr << "Test insertion in long word list...";
     for ( int i = 0; i < wordList.size(); i++ ) {
       // string word = keyTable.substr(i,1) + "key";
       string word = wordList[i] + "Key";
-      FilePointer fp = FilePointer( wordList[i], 10, 1, word );
+      FilePointer fp = FilePointer( wordList[i], 10, 1, wordList[i] );
       cerr << "======================\n";
       bpt2.insert( word, fp );
       bpt2.levelOrder( bpt2.getRoot() );
@@ -77,6 +80,7 @@ int main(int argc,char* argv[]) {
       assert( bpt2.search( word ) == true );
       cerr << "ok" << i << endl << endl;
     }
+    bpt2.printAll();
   }
   count++;
 

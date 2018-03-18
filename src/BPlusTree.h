@@ -31,18 +31,18 @@ public:
   bool isRoot( Node * cur ) const { return cur == root; }
 
   void insert( string word, FilePointer record );
-  void insert( Node * parent, Node * child );
+  void insert( Node * parent, Node * child, string key );
   bool remove( string word );
   Node * insertHelper( string word ); // find internal node candidate
   void splitNoneLeaf( Node * cur );
-  void splitLeaf( Node * cur );
+  void splitLeaf( Node * cur, int childIndex );
   void splitRoot( Node * cur );
-
+  void retainOrder( Node * left, Node * right, Node * cur );
   bool search( string word );  
   Node * searchHelper( string word ); // find leaf node candidate
   void bulkLoad( char * fileName );
   Node * getRoot() { return root; };
-  void printAll(){ printAll(root); };
+  void printAll();
   void printAll( Node * root );
   void printAllKeys() { printAllKeys( this->root ); };
   void printAllKeys( Node * cur );
