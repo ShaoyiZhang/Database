@@ -13,6 +13,7 @@ int numRows;
 
 #include <cstdlib>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -21,13 +22,13 @@ class EMS {
 };
 
 struct IndexRecord{
-    size_t hash;
-    size_t prev;
-    size_t next;
-    string filePointer;
+    string word;
+//    size_t prev;
+//    size_t next;
+    vector<unsigned long> vec;
 };
 
 void pR (struct IndexRecord ir);
-
+void gen_random(char *s, const int len);
 
 #endif //DATABASE_EMS_H
