@@ -20,10 +20,12 @@ class BPlusTree{
 private:
   Node * root;
   int count;
+  long maxPage;
 public:
   // BTree():root(new Node(true)),count(0){};
-  BPlusTree();
-  BPlusTree( string word, FilePointer record );
+  BPlusTree();  
+  BPlusTree( long maxPage );
+  BPlusTree( string word, FilePointer record, long maxPage );
   ~BPlusTree();
   int getCount(){ return count; };
   bool isRoot( Node * cur ) const { return cur == root; }
@@ -38,7 +40,7 @@ public:
 
   bool search( string word );  
   Node * searchHelper( string word ); // find leaf node candidate
-  
+  void bulkLoad( char * fileName );
   Node * getRoot() { return root; };
   void printAll(){ printAll(root); };
   void printAll( Node * root );

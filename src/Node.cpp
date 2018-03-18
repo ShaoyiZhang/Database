@@ -4,7 +4,7 @@
 // #endif
 // template<class T>
 Node::Node() {
-  cout << "default constructor size will be 0\n";
+  cerr << "default constructor size will be 0\n";
   for ( int i = 0; i < M; i++ ) {
     keys[i] = nullptr;
   }
@@ -20,7 +20,7 @@ Node::Node() {
 // constructor for root node with fp
 Node::Node( string word, FilePointer fp ) : isLeaf( false ), previous( nullptr ), 
                               next( nullptr ), parent( nullptr ) {
-  cout << "root cons, size 1\n";
+  cerr << "root cons, size 1\n";
   for ( int i = 0; i < M; i++ ) {
     keys[i] = nullptr;
   }
@@ -52,7 +52,7 @@ Node::Node( bool isLeaf,
   for ( int i = 0; i < L; i++ ) {
     filePointers[i] = nullptr;
   } 
-  cout << "new empty\n";
+  cerr << "new empty\n";
   // this->keys[0] = new string( fp.getWord() );
   // this->filePointers[0] = new FilePointer( fp ); // copy constructor
   nKeys = 0;
@@ -72,7 +72,7 @@ Node::Node( string word, FilePointer fp, bool isLeaf,
   for ( int i = 0; i < L; i++ ) {
     filePointers[i] = nullptr;
   } 
-  cout << "new leaf\n";
+  cerr << "new leaf\n";
   this->keys[0] = new string( word );
   this->filePointers[0] = new FilePointer( fp ); // copy constructor
   nKeys = 1;
@@ -83,20 +83,20 @@ Node::Node( string word, FilePointer fp, bool isLeaf,
 // if name is NOT present in the array, return -1
 int Node::indexOfKey(string key) {
   int index = 0;
-  // cout << this->size() << endl;
+  // cerr << this->size() << endl;
   for (int i = 0; i < this->size(); i++){
-    // cout << " index of key " << i << endl;
+    // cerr << " index of key " << i << endl;
     if ( key >= *keys[i]) {
       index++;
     }
-    // cout << " index of key " << i << "pass" << endl;    
+    // cerr << " index of key " << i << "pass" << endl;    
   }
   return index;
 }
 
 void Node::insertKey( string word ) { 
   int index = this->indexOfKey( word ); 
-  cout << "inserKey: size " << this->nKeys << " index " << index << endl;  
+  cerr << "inserKey: size " << this->nKeys << " index " << index << endl;  
   if ( index == this->nKeys ) { // insert at the end
     cerr << "insert at end\n";
     keys[index] = new string( word );
@@ -112,10 +112,45 @@ void Node::insertKey( string word ) {
   }
   nKeys++;  
 }
+
+void Node::insertChild( Node * child ) {
+  int index = this->indexOfChild( child->getKeyAt(0) ); 
+  cerr << "insert Child: size " << this->nChild << " index " << index << endl;  
+  nChild++;    
+  if ( index == this->nChild - 1 ) { // insert at the end
+    cerr << "insert at end\n";
+    children[index] = child;
+    // filePointers[index] = new FilePointer( fp );
+    return;
+  } 
+  // insert in the middle
+  cerr << "insert in middle\n";
+  if ( child->getIsLeaf() ) {
+    cerr << " child is leaf\n";
+  } else {
+    cerr << " child is internal\n";    
+  }
+  for ( int i = 0; i < child->size(); i++ ) {
+    cerr << " " << child->getKeyAt(i) << " ";
+  } 
+
+  cerr << "\n===========\n" << " index " << index  
+       << " nchild " << nChild << endl;  
+  for ( int i = nChild-1; i > index; i-- ) {
+    // keys[i] = keys[i-1];
+    // also need to move pointers
+    cerr << "===========\n" << i << " index " << index << endl;
+    children[i-1] = children[i];
+  }
+  children[index] = child;
+
+
+}
+
 // in leaf node, nKeys = nFPs, nChild = 0
 void Node::insertKeyValuePair( string word, FilePointer fp ) {
   int index = this->indexOfKey( word );
-  cout << "inserKeyValue: size " << this->size() << " index " << index << endl;  
+  cerr << "inserKeyValue: size " << this->size() << " index " << index << endl;  
   if ( index == this->nKeys ) { // insert at the end
     cerr << "insert at end\n";
     keys[index] = new string( word );
@@ -143,28 +178,28 @@ void Node::insertKeyValuePair( string word, FilePointer fp ) {
 //       return true;
 //     }
 //   }
-//   cout << "not contain " << record.getWord() << endl;
+//   cerr << "not contain " << record.getWord() << endl;
 //   return false;
 
 // }
 
 int Node::indexOfFilePointer( string word ) {
-  cout << "IndexOfFilePointer: key size is " << this->nKeys << "\n ";
+  cerr << "IndexOfFilePointer: key size is " << this->nKeys << "\n ";
   for ( int i = 0; i < nKeys; i++ ) {
-    cout << "index fp: " << i << " ";
+    cerr << "index fp: " << i << " ";
     if ( *( keys[i] ) == word ) {
-      cout << "pass" << endl;
+      cerr << "pass" << endl;
       return i;
     }
   }
-  cout << "not contain " << word << endl;
+  cerr << "not contain " << word << endl;
   return -1;
 }
 
 void Node::print() {
   if ( this->isLeaf == true ) {
     for (int i = 0; i < this->size(); i++) {
-      cout << "Key: "<< this->getKeyAt( i )
+      cerr << "Key: "<< this->getKeyAt( i )
            << " Value: " << this->getFPAt( i )
            << endl;
     }
@@ -182,10 +217,10 @@ ostream& operator <<( ostream& out, const FilePointer& fp ) {
 int Node::indexOfChild( string key ) {
     int index = 0;
     while ( index < nKeys && key >= *( keys[index] ) ) {
-        //cout << "capacity"<<this->GetCapcity()<<endl;
+        //cerr << "capacity"<<this->GetCapcity()<<endl;
         index++;
     }
-    //cout<<"index"<< index << endl;
+    //cerr<<"index"<< index << endl;
     return index;
 }
 
