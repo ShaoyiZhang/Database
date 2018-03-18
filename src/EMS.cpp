@@ -3,7 +3,7 @@
 //
 
 #include "EMS.h"
-#include "Sort.h"
+//#include "Sort.h"
 
 // C++ program to implement external sorting using
 // merge sort
@@ -13,6 +13,8 @@
 #include <ctime>
 #include <climits>
 #include <fstream>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 using namespace std;
 
@@ -55,17 +57,29 @@ public:
     // to replace root with new node x and heapify()
     // new root
     void replaceMin(MinHeapNode x) {
+        if (strcmp(x.element.word.c_str(), "") == 0)
+            printf("replace with: MAX\n");
+        else
+            printf("replace with: %s\n", x.element.word.c_str());
+//        printf("this MinHeapNode x's size: %d\n", x.element.vec.size());
         harr[0] = x;
+//        printf("this harrp[0]'s size: %d\n", harr[0].element.vec.size());
         MinHeapify(0);
         printf("after replaceMin: \n");
         this->print();
     }
 
     void print(){
+        printf("\n-------------------------------------------\n");
         printf("printing min heap: \n");
-        for (int i =0; i<heap_size; i++ )
-            printf("%d ", harr[i].element.hash);
+        for (int i =0; i<heap_size; i++ ){
+            if (strcmp (harr[i].element.word.c_str(), "") != 0)
+                printf("%s ", harr[i].element.word.c_str());
+            else
+                printf("MAX ");
+        }
         printf("\n");
+        printf("-------------------------------------------\n\n");
     }
 
     void insertKey(MinHeapNode k);
@@ -79,16 +93,21 @@ MinHeap::MinHeap(MinHeapNode a[], int size) {
 
     for (int j=0; j<size; j++) {
         insertKey(a[j]);
-        printf("\nheap after inserting: %d\n", a[j].element.hash);
+//        printf("\nheap after inserting: %d\n", a[j].element.hash);
         this->print();
-        printf("\n");
+//        printf("\n");
     }
 
-    this->print();
+//    this->print();
 }
 
 void MinHeap::insertKey(MinHeapNode k)
 {
+    if (strcmp(k.element.word.c_str(), "") == 0)
+        printf("inserting: MAX\n");
+    else
+        printf("inserting: %s\n", k.element.word.c_str());
+
     if (heap_size == capacity)
     {
         printf("\nOverflow: Could not insertKey\n");
@@ -99,13 +118,31 @@ void MinHeap::insertKey(MinHeapNode k)
     heap_size++;
     int i = heap_size - 1;
     harr[i] = k;
-    printf("inserting: %d\n", k.element.hash);
+
     // Fix the min heap property if it is violated
-    while (i != 0 && ((int)harr[parent(i)].element.hash > (int)harr[i].element.hash))
-    { printf("this needs to be swapped...........i: %d, \n", i);
-        printf("because I think %d is bigger than %d, \n", harr[parent(i)].element.hash, harr[i].element.hash);
-        swap(&harr[i], &harr[parent(i)]);
-        i = parent(i);
+//    while (i != 0 && (harr[parent(i)].element.word > harr[i].element.word))
+//    {
+//        printf("this needs to be swapped...........i: %d, \n", i);
+//        printf("because I think %s is bigger than %s, \n", harr[parent(i)].element.word.c_str(), harr[i].element.word.c_str());
+//        swap(&harr[i], &harr[parent(i)]);
+//        i = parent(i);
+//    }
+    while (i != 0)
+    {   if (harr[parent(i)].element.word > harr[i].element.word) {
+            printf("FIRST this needs to be swapped...........i: %d, \n", i);
+            printf("because I think i: %s is bigger than %s, \n", harr[i].element.word.c_str(), harr[parent(i)].element.word.c_str());
+            swap(&harr[i], &harr[parent(i)]);
+            i = parent(i);
+        }
+        else if (harr[left(parent(i))].element.word > harr[i].element.word && left(parent(i)) != i){
+            printf("SECOND this needs to be swapped...........i: %d, \n", i);
+            printf("because I think i: %s is bigger than %s, \n", harr[i].element.word.c_str(), harr[left(parent(i))].element.word.c_str());
+            swap(&harr[i], &harr[left(parent(i))]);
+            i = left(parent(i));
+        }
+        else {
+            i = 0;
+        }
     }
 }
 
@@ -115,32 +152,125 @@ void MinHeap::insertKey(MinHeapNode k)
 void MinHeap::MinHeapify(int i) {
     int l = left(i);
     int r = right(i);
+
+    printf("+++++++++++\n");
+    if (i < heap_size) {
+        if (strcmp(harr[i].element.word.c_str(), "") != 0)
+            printf("i: %s\n", harr[i].element.word.c_str());
+        else
+            printf("i: MAX\n");
+    }
+    if (l < heap_size) {
+        if (strcmp(harr[l].element.word.c_str(), "") != 0)
+            printf("l: %s\n", harr[l].element.word.c_str());
+        else
+            printf("l: MAX\n");
+    }
+    if (r < heap_size) {
+        if (strcmp(harr[r].element.word.c_str(), "") != 0)
+            printf("r: %s\n", harr[r].element.word.c_str());
+        else
+            printf("r: MAX\n");
+    }
+    printf("+++++++++++\n");
+
+
     int smallest = i;
-//    printf("PREEE i: %d, l: %d, r: %d, small: %d\n", i,l, r, smallest);
-//    printf("11111111\n");
-    if (l < heap_size && (int)harr[l].element.hash < (int)harr[i].element.hash) {
-//        printf("2222222\n");
+    int flag1 = 0, flag2 = 0;
+    if (l < heap_size) {
+        if (strcmp (harr[i].element.word.c_str(), "") == 0) {
+            printf("1st condition\n");
+            smallest = l;
+            flag1 = 1;
+        }
+        if (strcmp (harr[l].element.word.c_str(), "") != 0
+            && harr[l].element.word < harr[i].element.word && flag1 == 0) {
+            printf("2nd condition\n");
+            smallest = l;
+        }
+    }
+    if (r < heap_size) {
+        if (strcmp (harr[smallest].element.word.c_str(), "")  == 0) {
+            printf("3rd condition\n");
+            smallest = r;
+            flag2 = 1;
+        }
+        if(strcmp (harr[r].element.word.c_str(), "") != 0
+            && harr[r].element.word < harr[smallest].element.word && flag2 == 0) {
+            printf("4th condition\n");
+            smallest = r;
+        }
+    }
+    // special condition
+    if (l < heap_size && r < heap_size
+        && strcmp (harr[i].element.word.c_str(), "") != 0
+        && strcmp (harr[l].element.word.c_str(), "") == 0
+        && strcmp (harr[r].element.word.c_str(), "")  == 0) {
+        printf("5th condition\n");
+        smallest = i;
+    }
+
+    if (l < heap_size && r < heap_size
+        && strcmp (harr[i].element.word.c_str(), "") == 0
+        && strcmp (harr[l].element.word.c_str(), "") != 0
+        && strcmp (harr[r].element.word.c_str(), "")  == 0) {
+        printf("6th condition\n");
         smallest = l;
     }
-//    printf("666666\n");
-    if (r < heap_size && (int)harr[r].element.hash < (int)harr[smallest].element.hash) {
-//        printf("3333333\n");
+
+    if (l < heap_size && r < heap_size
+        && strcmp (harr[i].element.word.c_str(), "") == 0
+        && strcmp (harr[l].element.word.c_str(), "") == 0
+        && strcmp (harr[r].element.word.c_str(), "")  != 0) {
+        printf("7th condition\n");
         smallest = r;
     }
-//    printf("777777\n");
-//    printf("AFTTT i: %d, l: %d, r: %d, small: %d\n", i,l, r, smallest);
+
+    if (l < heap_size && r >= heap_size
+        && strcmp (harr[i].element.word.c_str(), "") != 0
+        && strcmp (harr[l].element.word.c_str(), "") == 0) {
+        printf("9th condition\n");
+        smallest = i;
+    }
+    if (l < heap_size && r >= heap_size
+        && strcmp (harr[i].element.word.c_str(), "") == 0
+        && strcmp (harr[l].element.word.c_str(), "") != 0) {
+        printf("10th condition\n");
+        smallest = l;
+    }
+
+    if (l >= heap_size && r < heap_size
+        && strcmp (harr[i].element.word.c_str(), "") != 0
+        && strcmp (harr[r].element.word.c_str(), "") == 0) {
+        printf("11th condition\n");
+        smallest = i;
+    }
+    if (l >= heap_size && r < heap_size
+        && strcmp (harr[i].element.word.c_str(), "") == 0
+        && strcmp (harr[r].element.word.c_str(), "") != 0) {
+        printf("12th condition\n");
+        smallest = r;
+    }
+
     if (smallest != i) {
-//        printf("4444444\n");
+        this->print();
         swap(&harr[i], &harr[smallest]);
-//        printf("done swap\n");
         MinHeapify(smallest);
     }
-//    printf("5555555\n");
 }
 
 // A utility function to swap two elements
 void swap(MinHeapNode *x, MinHeapNode *y) {
-    printf("swapping %d and %d\n", x->element.hash, y->element.hash);
+    string a, b;
+    if (strcmp (x->element.word.c_str(), "") == 0)
+        a = "MAX";
+    else
+        a = x->element.word.c_str();
+    if (strcmp (y->element.word.c_str(), "") == 0)
+        b = "MAX";
+    else
+        b = y->element.word.c_str();
+    printf("swapping %s and %s\n", a.c_str(), b.c_str());
     MinHeapNode temp = *x;
 //    printf("temp is good\n");
     *x = *y;
@@ -172,7 +302,7 @@ void merge(struct IndexRecord arr[], int l, int m, int r) {
     j = 0; // Initial index of second subarray
     k = l; // Initial index of merged subarray
     while (i < n1 && j < n2) {
-        if ((int)L[i].hash <= (int)R[j].hash)
+        if (L[i].word <= R[j].word)
             arr[k++] = L[i++];
         else
             arr[k++] = R[j++];
@@ -217,7 +347,7 @@ FILE *openFile(char *fileName, char *mode) {
 // Merges k sorted files.  Names of files are assumed
 // to be 1, 2, 3, ... k
 void mergeFiles(char *output_file, int n, int k) {
-    FILE *in[k];
+    ifstream in[k];
     for (int i = 0; i < k; i++) {
         char fileName[10];
 
@@ -225,12 +355,12 @@ void mergeFiles(char *output_file, int n, int k) {
         snprintf(fileName, sizeof(fileName), "%d", i);
 
         // Open output files in read mode.
-        in[i] = openFile(fileName, "r");
+        in[i].open(fileName);
     }
-
+    printf("arrive 1\n");
     // FINAL OUTPUT FILE
     FILE *out = openFile(output_file, "w");
-
+    printf("arrive 2\n");
     // Create a min heap with k heap nodes.  Every heap node
     // has first element of scratch output file
     MinHeapNode *harr = new MinHeapNode[k];
@@ -238,20 +368,25 @@ void mergeFiles(char *output_file, int n, int k) {
     for (i = 0; i < k; i++) {
         // break if no output file is empty and
         // index i will be no. of input files
-        if (fscanf(in[i], "%d\t", &harr[i].element.hash) != 1)
+        printf("this is: %d\n", i);
+        string line;
+        if (!getline(in[i], line))
+        {
             break;
-        char ccc[100];
-        fscanf(in[i], "%d\t", &harr[i].element.prev);
-        fscanf(in[i], "%d\t", &harr[i].element.next);
-        fscanf(in[i], "%s\n", ccc); harr[i].element.filePointer = ccc;
+        }
+        printf("the line is %s\n", line.c_str());
+        vector<string> tokens;
+        vector<unsigned long> tmp_vec;
+        boost::split(tokens, line, boost::is_any_of("\t"));
+        harr[i].element.word = tokens[0];
+        for (int w = 1; w < tokens.size(); w++){
+            printf("%s\n", tokens[w].c_str());
+            tmp_vec.push_back(stol(tokens[w]));
+        }
+        harr[i].element.vec = tmp_vec;
 
-        harr[i].i = i; // Index of scratch output file
+        harr[i].i = i;
     }
-//    printf("i is: %d\n", i);
-    fprintf(out, "%d\n", numRows);
-//    for (int k=0; k<i; k++){
-//        pN(harr[k]);
-//    }
 
     MinHeap hp(harr, i); // Create the heap
 
@@ -269,72 +404,63 @@ void mergeFiles(char *output_file, int n, int k) {
     while (count != i) {
         // Get the minimum element and store it in output file
         MinHeapNode root = hp.getMin();
-
-        if (rowNum == 1){
-            curr = root;
-            curr.element.prev = 0;
+//        printf("root has size: %d\n", root.element.vec.size());
+        string s = root.element.word + "\t";
+        std::vector<unsigned long>::iterator it;
+        int a = 0;
+        for (it = root.element.vec.begin(); it != root.element.vec.end(); ++it) {
+            if (a != root.element.vec.size() - 1)
+                s = s + to_string(*it) + "\t";
+            else
+                s = s + to_string(*it) + "\n";
+            a++;
         }
-        else {
-            prev = curr;
-            curr = root;
-
-            if (prev.element.hash == curr.element.hash) {
-                prev.element.next = rowNum;
-                curr.element.prev = rowNum - 1;
-            } else {
-                prev.element.next = 0;
-                curr.element.prev = 0;
-            }
-            fprintf(out, "%d\t%d\t%d\t%s\n", prev.element.hash, prev.element.prev,
-                    prev.element.next, prev.element.filePointer.c_str());
-        }
+        fprintf(out, "%s", s.c_str());
 
 //        fprintf(out, "%d\t%d\t%d\t%s\n", root.element.hash, root.element.prev,
 //                root.element.next, root.element.filePointer.c_str());
-//        printf("getting out: \n");
-//        pR(root.element);
-
+        printf("getting out: ");
+        if (strcmp (root.element.word.c_str(), "") == 0)
+            printf("ROOT EMPTY !!!!!!!!!!!!!!!!!!!!!\n");
+        else
+            printf("%s\n", root.element.word.c_str());
 //        printf("outputting: %d\n", rowNum++);
         // Find the next element that will replace current
         // root of heap. The next element belongs to same
         // input file as the current min element.
         int flag = 0;
-        if (fscanf(in[root.i], "%d\t", &root.element.hash) != 1) {
-            struct IndexRecord ir = {MAX, 0000, 1111, ""};
+        string line;
+        if (!getline(in[root.i], line)) {
+            vector<unsigned long> vec; vec.push_back(0);
+            struct IndexRecord ir = {"", vec};
             root.element = ir;
-            printf("break at %d, file %d\n", rowNum, root.i);
-            printf("printing stats: \n");
-            for (int l=0; l<k; l++){
-                printf("%d ", stats[root.i]);
-            }
-            printf("\n");
-            hp.print();
+            printf("count is done!!!\n");
             count++;
             flag = 1;
         }
+//        printf("so now I am reading: %s\n", line.c_str());
         if (flag == 0){
-            char ccc[100];
-            fscanf(in[root.i], "%d\t", &root.element.prev);
-            fscanf(in[root.i], "%d\t", &root.element.next);
-            fscanf(in[root.i], "%s\n", ccc); root.element.filePointer = ccc;
-            stats[root.i]++;
+            vector<string> tokens;
+            vector<unsigned long> tmp_vec;
+            boost::split(tokens, line, boost::is_any_of("\t"));
+            root.element.word = tokens[0];
+            for (int w = 1; w < tokens.size(); w++)
+                tmp_vec.push_back(stol(tokens[w]));
+            root.element.vec = tmp_vec;
+//            stats[root.i]++;
+            printf("size: %d\n", tokens.size());
             rowNum++;
         }
 
-        printf("replace with: \n");
-        pR(root.element);
+//        printf("replace with: \n");
+//        pR(root.element);
         // Replace root with next element of input file
         hp.replaceMin(root);
     }
 
-    prev = curr;
-    prev.element.next = 0;
-    fprintf(out, "%d\t%d\t%d\t%s\n", prev.element.hash, prev.element.prev,
-            prev.element.next, prev.element.filePointer.c_str());
-
     // close input and output files
     for (int i = 0; i < k; i++)
-        fclose(in[i]);
+        in[i].close();
 
     fclose(out);
 }
@@ -344,7 +470,7 @@ void mergeFiles(char *output_file, int n, int k) {
 void createInitialRuns(char *input_file, int run_size,
                        int num_ways) {
     // For big input file
-    FILE *in = openFile(input_file, "r");
+    ifstream in (input_file);
 
     // output scratch files
     FILE *out[num_ways];
@@ -365,7 +491,8 @@ void createInitialRuns(char *input_file, int run_size,
     int next_output_file = 0;
 
     // read first row metadata
-    if (fscanf(in, "%d\n", &numRows) != 1)
+    string line;
+    if (!getline(in, line))
     {
         printf("Metadata missing\n");
         exit(1);
@@ -377,32 +504,39 @@ void createInitialRuns(char *input_file, int run_size,
         for (i = 0; i < run_size; i++)
         {
             printf("i is: %d\n", i);
-            if (fscanf(in, "%d\t", &arr[i].hash) != 1)
+            if (!getline(in, line))
             {
-//                printf("break\n");
+                printf("break\n");
                 more_input = false;
                 break;
             }
-            char ccc[100];
-            fscanf(in, "%d\t", &arr[i].prev);
-            fscanf(in, "%d\t", &arr[i].next);
-            fscanf(in, "%s\n", ccc); arr[i].filePointer = ccc;
-//            printf("cstr: %s\n", arr[i].filePointer.c_str());
+            vector<std::string> tokens;
+            vector<unsigned long> tmp_vec;
+            boost::split(tokens, line, boost::is_any_of("\t"));
+            arr[i].word = tokens[0];
+            for (int k = 1; k < tokens.size(); k++)
+                tmp_vec.push_back(stol(tokens[k]));
+
+            arr[i].vec = tmp_vec;
         }
-
         // sort array using merge sort
-//        printf("before merge\n");
         mergeSort(arr, 0, i - 1);
-//        printf("after merge\n");
-//        printf("i is %d\n", i);
-//        printf("runsize is %d\n", run_size);
-
         // write the records to the appropriate scratch output file
         // can't assume that the loop runs to run_size
         // since the last run's length may be less than run_size
         for (int j = 0; j < i; j++) {
-            fprintf(out[next_output_file], "%d\t%d\t%d\t%s\n", arr[j].hash, arr[j].prev,
-                    arr[j].next, arr[j].filePointer.c_str());
+            printf("j is: %d\n", j);
+            string s = arr[j].word + "\t";
+            std::vector<unsigned long>::iterator it;
+            int k = 0;
+            for (it = arr[j].vec.begin(); it != arr[j].vec.end(); ++it) {
+                if (k != arr[j].vec.size() - 1)
+                    s = s + to_string(*it) + "\t";
+                else
+                    s = s + to_string(*it) + "\n";
+                k++;
+            }
+            fprintf(out[next_output_file], "%s", s.c_str());
 //            printf("cstr: %s\n", arr[j].filePointer.c_str());
         }
 
@@ -414,7 +548,7 @@ void createInitialRuns(char *input_file, int run_size,
         fclose(out[i]);
 
     free(arr);
-    fclose(in);
+    in.close();
 }
 
 // For sorting data stored on disk
@@ -422,9 +556,15 @@ void externalSort(char *input_file, char *output_file, int num_ways, int run_siz
     // read the input file, create the initial runs,
     // and assign the runs to the scratch output files
     createInitialRuns(input_file, run_size, num_ways);
+    printf("here1111\n");
 
     // Merge the runs using the K-way merging
     mergeFiles(output_file, run_size, num_ways);
+    printf("here2222\n");
+}
+
+void sortDocIds(char *index_file, char *input_file, char *output_file){
+    ifstream ix (index_file);
 }
 
 
@@ -437,12 +577,12 @@ int main() {
     char output_file[] = "output.txt";
 
     FILE *in = openFile(input_file, "r");
-    if (fscanf(in, "%d\n", &numRows) != 1)
-    {
-        printf("Metadata missing\n");
-        exit(1);
-    }
-    fclose(in);
+//    if (fscanf(in, "%d\n", &numRows) != 1)
+//    {
+//        printf("Metadata missing\n");
+//        exit(1);
+//    }
+//    fclose(in);
 
     totalWords = numRows;
 
@@ -462,6 +602,8 @@ int main() {
     }
 
     in = openFile(input_file, "w");
+    ifstream tf;
+    tf.open("google-10000-english-no-swears.txt");
 
     srand(time(NULL));
 
@@ -469,33 +611,66 @@ int main() {
     int minimum_number = 0;
 
     fprintf(in, "%d\n", 50000);
+    totalWords = 10000;
+    num_ways = 10;
+    run_size = 1000;
+
+    static const char * alphanum[] = {
+            "1\t2\t3\n",
+                    "1\t2\t3\t4\t5\n",
+                    "1\t2\t3\t4\t5\t6\t7\n"};
 
     // generate input
-    for (int i = 0; i < totalWords; i++)
-        fprintf(in, "%d\t%d\t%d\t%s\n", rand() % (max_number + 1 - minimum_number) + minimum_number,
-                0000, 1111, "12345678");
+    string l;
+    for (int i = 0; i < totalWords/2; i++) {
+        getline(tf, l);
+        printf("i: %d\n", i);
+        printf("l: %s\n", l.c_str());
+//        char tmp[10]; gen_random(tmp, 10);
+        fprintf(in, "%s\t", l.c_str());
+        fprintf(in, "%s", alphanum[0]);
+    }
+//    for (int i = 0; i < totalWords/2; i++) {
+//        char tmp[10]; gen_random(tmp, 10);
+//        fprintf(in, "%s\t", tmp);
+//        fprintf(in, "%s", alphanum[rand() % 3]);
+//        fprintf(in, "%s\t", tmp);
+//        fprintf(in, "%s", alphanum[rand() % 3]);
+//    }
 
     fclose(in);
+    tf.close();
 
-
-    externalSort(input_file, output_file, num_ways, run_size);
+    externalSort(input_file, "output.txt", num_ways, run_size);
 
     return 0;
 }
 
-void pR (struct IndexRecord ir){
-    printf("\n");
-    printf("{\n");
-    printf("hash: %d, pr: %d, nx: %d, fp: %s\n", ir.hash, ir.prev, ir.next, ir.filePointer.c_str());
-    printf("}\n");
-    printf("\n");
-}
+void gen_random(char *s, const int len) {
+    static const char alphanum[] =
+            "0123456789"
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    "abcdefghijklmnopqrstuvwxyz";
 
-void pN (struct MinHeapNode mh){
-    printf("\n");
-    printf("{\n");
-    printf("mh i: %d\n", mh.i);
-    printf("hash: %d, pr: %d, nx: %d, fp: %s\n", mh.element.hash, mh.element.prev, mh.element.next, mh.element.filePointer.c_str());
-    printf("}\n");
-    printf("\n");
+    for (int i = 0; i < len; ++i) {
+        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+
+    s[len] = 0;
 }
+//void pR (struct IndexRecord ir){
+//    printf("\n");
+//    printf("{\n");
+//    printf("hash: %d, pr: %d, nx: %d, fp: %s\n", ir.hash, ir.prev, ir.next, ir.filePointer.c_str());
+//    printf("}\n");
+//    printf("\n");
+//}
+//
+//void pN (struct MinHeapNode mh){
+//    printf("\n");
+//    printf("{\n");
+//    printf("mh i: %d\n", mh.i);
+//    printf("hash: %d, pr: %d, nx: %d, fp: %s\n", mh.element.hash, mh.element.prev, mh.element.next, mh.element.filePointer.c_str());
+//    printf("}\n");
+//    printf("\n");
+//}
