@@ -4,20 +4,21 @@
 // export
 // #endif
 // template<class T>
-BPlusTree::BPlusTree(){
+BPlusTree::BPlusTree( string filename){
   this->root = nullptr;
   count = 0;
   maxPage = 200;
+  loadDirPage( filename );
 }
 
-BPlusTree::BPlusTree( long maxPage ){
+BPlusTree::BPlusTree( int maxPage ){
   this->root = nullptr;
   count = 0;
   maxPage = maxPage;
 }
 
 // root
-BPlusTree::BPlusTree ( string word, FilePointer record, long maxPage ) {
+BPlusTree::BPlusTree ( string word, FilePointer record, int maxPage ) {
   Node * root = new Node( word, record );
   this->root = root;
   this->count = 1;
@@ -97,16 +98,17 @@ bool BPlusTree::search( string word ) {
 
 // helper method
 // insert a newly splitted node(child) to its parent(this)
-void BPlusTree::insert( Node * parent, Node * child ) {
+void BPlusTree::insert( Node * parent, Node * child, string key ) {
   cerr << "insert (different signature)\n";
   this->levelOrder( child );
   // this->levelOrder( parent->getChildAt(0) );
-  this->levelOrder( parent->getParent() );
+  // this->levelOrder( parent->getParent() );
   this->levelOrder( root ); 
   // cerr << parent->getChildAt(0);
-  int index = parent->indexOfChild( child->getKeyAt(0) );
-  cerr << "index of child " << index << "\n";
+  // int index = parent->indexOfChild( child->getKeyAt(0) );
+  // cerr << "index of child " << index << "\n";
   
+  /*
   // case key size == children size
   if ( parent->size() == parent->childSize() ) {
     // insert child at end, inserting to a new root?
@@ -132,8 +134,12 @@ void BPlusTree::insert( Node * parent, Node * child ) {
 
     child->setParent( parent );
   }
+  */
+  parent->insertChild( child, key );
+
   cerr << "before checking post-internal-insertion:\n";
   cerr << "keys: ";
+  this->levelOrder( root );
   for ( int i = 0; i < parent->size(); i++ ) {
     cerr << parent->getKeyAt(i) << " ";
   }
@@ -188,7 +194,7 @@ void BPlusTree::splitNoneLeaf( Node * cur ) {
   newInternal->setChildAt( 0, cur->getChildAt( leftBound ) );
   // move middle key to parent, child pointers in parent need to be shifed
   // shifting implemented in insertKey()
-  cur->getParent()->insertKey( cur->getKeyAt( middle ) );
+  // cur->getParent()->insertKey( cur->getKeyAt( middle ) );
   cerr<< "check parent keys:\n";
   for ( int i = 0; i < cur->getParent()->size(); i++ ) {
     cerr << cur->getParent()->getKeyAt(i) << " ";
@@ -219,18 +225,29 @@ void BPlusTree::splitNoneLeaf( Node * cur ) {
       child->setParent( newInternal );
     }
   }
-
+  this->levelOrder( root );
+  this->levelOrder( newInternal );
   cerr << "split internal move phase pass\n";
   cerr << "try insert splitted internal to parent\n";
-  cerr << "new root: " << cur->getParent() << " " << newInternal->getParent()->size() << " " 
-  << " key " << newInternal->getParent()->getKeyAt(0) << endl;
-  cerr << " childSize " << newInternal->getParent()->childSize() << endl;
+  // cerr << "new root: " << cur->getParent() << " " << newInternal->getParent()->size() << " " 
+  // << " key " << newInternal->getParent()->getKeyAt(0) << endl;
+  // cerr << " childSize " << newInternal->getParent()->childSize() << endl;
   cerr << "cur child size: " << cur->childSize() << " key size: " << cur->size() << endl;
   cerr << "new internal child size: " << newInternal->childSize() << " key size: " << newInternal->size() << endl;  
-  insert( cur->getParent(), newInternal );
+  Node * temp = newInternal;
+  while ( temp->getIsLeaf() == false ) {
+    if ( temp->getChildAt(0) != nullptr ) {
+      temp = temp->getChildAt(0);
+    } else {
+      cerr << "byebye!\n";
+      break;
+    }
+  }
+  string key = temp->getKeyAt(0);
+  insert( cur->getParent(), newInternal, key );
 }
 
-void BPlusTree::splitLeaf( Node * cur ) {
+void BPlusTree::splitLeaf( Node * cur, int childIndex ) {
   cerr << "split leaf !\n";
   Node * newLeaf = new Node(true, cur );
   assert( cur->size() == L + 1 );
@@ -239,15 +256,28 @@ void BPlusTree::splitLeaf( Node * cur ) {
   for (int i = leftBound; i <= L; i++){
     // copy latterHalf(index 2,3) to new leaf
     newLeaf->insertKeyValuePair( cur->getKeyAt( i ), *(cur->getFPAt( i ) ) );
-
     // remove from original node
-    // cur->clearKeyAt( i );
-    // cur->clearFPAt( i );
     cur->decrKeySize();
   }
   cerr << "split leaf move phase pass\n";
   this->levelOrder( this->root );
   
+  cerr << "!!!!!!!!!!\n";
+  for ( int j = 0; j < cur->getParent()->childSize(); j++ ) {
+    if ( cur->getParent()->getChildAt(j) != nullptr ) {
+      cerr << cur->getParent()->getChildAt(j)->getFPAt(0)->getWord() << " ";
+    }
+  }
+  cerr << endl;
+
+  cerr << "split leaf linked list reorder pass\n";
+  // insert new leaf to parent (which must be none-leaf)
+  cerr << "try insert splitted leaf to parent\n";
+
+  string key = newLeaf->getKeyAt(0);
+  // cur->getParent()->setChildAt( 0, newLeaf );
+  // cerr << "insert LEFT !!!!!!!!!\n";
+  this->levelOrder( root );
   // retain the linked list structure of leaf nodes to support range query
   if ( cur->getNext() != nullptr ) { //&&this->next->keys[0]!="")
     cur->getNext()->setPrevious( newLeaf );
@@ -256,12 +286,41 @@ void BPlusTree::splitLeaf( Node * cur ) {
   newLeaf->setParent( cur->getParent() );
   newLeaf->setPrevious( cur );
   cur->setNext( newLeaf );
-  cerr << "split leaf linked list reorder pass\n";
-  // insert new leaf to parent (which must be none-leaf)
-  cerr << "try insert splitted leaf to parent\n";
-  insert( cur->getParent(), newLeaf );
+  // retainOrder( cur, newLeaf, cur );
+  insert( cur->getParent(), newLeaf, key );
+
+  // this->printAll();
+  // // at left most node, we will retain the right half
+  // // and insert the left half to parent
+  // if ( childIndex == 0 ) {
+  //   // insert left part( new leaf) with key of right part(cur)
+  //   string key = newLeaf->getKeyAt(0);
+  //   cur->getParent()->setChildAt( 0, newLeaf );
+  //   cerr << "insert LEFT !!!!!!!!!\n";
+  //   this->levelOrder( root );
+  //   retainOrder( cur, newLeaf, cur );
+  //   insert( cur->getParent(), newLeaf, key );
+  // } else {
+  //   string key = newLeaf->getKeyAt(0);     //??!
+  //   retainOrder( newLeaf, cur, cur );
+  //   insert( cur->getParent(), newLeaf, key );
+  // }
 }
 
+// void BPlusTree::retainOrder( Node * left, Node * right, Node * orig ) {
+//   // retain the linked list structure of leaf nodes to support range query
+//   Node * next = orig->getNext(), * parent = orig->getParent(), 
+//        * prev = orig->getPrev();
+//   if ( next != nullptr ) { //&&this->next->keys[0]!="")
+//     next->setPrevious( right );
+//   }
+//   right->setNext( next );
+//   right->setParent( parent );
+//   right->setPrevious( left );
+//   left->setNext( right );
+//   left->setParent( parent );
+//   left->setPrevious( prev );
+// }
 // Return a pointer to a internal node that might contain the desired leaf node
 Node * BPlusTree::insertHelper( string word ) {
   cerr << "inside insert helper\n";
@@ -271,41 +330,53 @@ Node * BPlusTree::insertHelper( string word ) {
     return nullptr;//make_pair( nullptr, -1 );
   }
   Node * cur = this->root;
-  assert( cur->childSize() > 0 );
+  assert( cur->childSize() > 1 );
   bool isLeaf;
 
   // -------------------- does not handle empty tree
-  if ( cur->getChildAt(0) == nullptr ) {
-    isLeaf == cur->getChildAt(1)->getIsLeaf();
-  } else {
-    isLeaf == cur->getChildAt(0)->getIsLeaf();
-  }
+  // if ( cur->getChildAt(0) == nullptr ) {
+  //   isLeaf == cur->getChildAt(1)->getIsLeaf();
+  // } else {
+  //   isLeaf == cur->getChildAt(0)->getIsLeaf();
+  // }
+  isLeaf = false;
   cerr << "printing root\n";
   this->levelOrder( root );
-  while ( cur->getChildAt(1)->getIsLeaf() == false ) {
+  while ( isLeaf == false ) {
     cerr << "try move down\n";
-    Node ** childrenPtr = cur->getChildren();
-    cerr << "address of childrenPtr: " << childrenPtr << endl;
-    int index = cur->indexOfChild( word ) ;
+    // Node ** childrenPtr = cur->getChildren();
+    // cerr << "address of childrenPtr: " << childrenPtr << endl;
+    int index = cur->indexOfChild( word );
     cerr << "index of child: " << index << " childsize: " << cur->childSize() <<endl;
-    if ( index == cur->childSize() ) {
-      // we scaned all children, but the deseried leaf node is missing
-      // we will return a nullptr
-      cerr << "child pointer does NOT exist\n";
+    // if ( index == cur->childSize() ) {
+    //   // we scaned all children, but the deseried leaf node is missing
+    //   // we will return a nullptr
+    //   cerr << "child pointer does NOT exist\n";
 
-      // Node * newLeaf = new Node( true, cur );
-      // // cur->getChildren()->push_back( newLeaf );
-      // cur->setChildAt( index, newLeaf );
-      // cur->incrChildSize();
-    }
+    // }
     // retrieve the leaf node pointer and return to caller
     cerr << "helo\n";
-    cur = cur->getChildAt(index);   
-    cerr << cur << endl;    
+    if ( cur->getChildAt(index) != nullptr && 
+         cur->getChildAt(index)->getIsLeaf() == false ) {
+        cur = cur->getChildAt(index);           
+    } else {
+      cerr << "move down complete\n";      
+      return cur;
+    }
+    // cur = cur->getChildAt(index);   
+    // cerr << cur << endl;    
     // if ( cur->getIsLeaf() == true ) {
     //   cerr << cur << endl;
     // } 
-    cerr << "move down complete\n";
+    // update isLeaf
+    // if ( cur->getIsLeaf() ) {
+    //   break;
+    // }
+    // if ( cur->getChildAt(0) == nullptr ) {
+    //   isLeaf == cur->getChildAt(1)->getIsLeaf();
+    // } else {
+    //   isLeaf == cur->getChildAt(0)->getIsLeaf();
+    // }
     // cur = *( cur->GetChildren() )[ cur->IndexOfChild( word ) ];
   }
   // cerr << cur << endl;
@@ -333,11 +404,12 @@ void BPlusTree::insert( string word, FilePointer record ){
   // this->levelOrder( this->root );
   this->levelOrder( candidate );
   cerr << "insert continue after insert helper return\n";
-
+  assert( candidate->getIsLeaf() == false );
   int childIndex = candidate->indexOfChild( word );
   cerr << "deepest internal node child index: " << childIndex << " childSize: " << candidate->childSize() << "\n";  
+  Node * cur = candidate->getChildAt(childIndex);
   if ( childIndex == candidate->childSize() || 
-       candidate->getChildAt(childIndex) == nullptr ) {
+       cur == nullptr ) {
     // we scaned all children, but the deseried leaf node is missing
     cerr << "child pointer does NOT exist\n";
   
@@ -345,7 +417,21 @@ void BPlusTree::insert( string word, FilePointer record ){
 
     // create new leaf and insert 
     Node * newLeaf = new Node( word, record, true, candidate );
+    if ( childIndex == 0 ) {
+      Node * next = candidate->getChildAt(1);
+      newLeaf->setNext(next);
+      // newLeaf->
+
+    } 
+    // Node * pre = candidate->getChildAt( childIndex - 1 );    
+    // if ( pre != nullptr ) {
+    //   newLeaf->setNext( pre->getNext() );
+    //   newLeaf->setPrevious( pre );
+    //   pre->setNext( newLeaf );
+    // }
+
     candidate->setChildAt( childIndex, newLeaf );
+    // candidate->getChildAt( childIndex )setNext( )
     // candidate->incrChildSize();
     return;
   }
@@ -353,7 +439,7 @@ void BPlusTree::insert( string word, FilePointer record ){
   // set candidate to be leaf node
   candidate = candidate->getChildAt( childIndex );    
 
-  // leaf node 
+  // at leaf node 
   int index = candidate->indexOfKey( word );
   cerr << "insert index in leaf: " << index << endl;
   cerr << "before insert key value\n";
@@ -377,25 +463,27 @@ void BPlusTree::insert( string word, FilePointer record ){
   // check leaf node size to see if we need to split leaf
   if ( candidate->size() == L + 1 ) {
     // need to split leaf
-    splitLeaf( candidate );
+    splitLeaf( candidate, childIndex );
   }
+  cerr << "after insertion: \n";
+  this->levelOrder( this->root );
 }
 
 void BPlusTree::levelOrder( Node * cur ) {
-  cerr << "Current tree:\n";
+  cout << "Current tree:\n";
   if ( cur == nullptr ) {
-    cerr << "Tree is empty\n";
+    cout << "Tree is empty\n";
     return;
   }
   vector<vector<string>> res;
   bfs( cur, res, 0 );
   for ( int i = 0; i < res.size(); i++ ) {
     for ( int j = 0; j < res[i].size(); j++ ) {
-      cerr << res[i][j] << " ";
+      cout << res[i][j] << " ";
     }
-    cerr << endl;
+    cout << endl;
   }
-  cerr << endl;
+  cout << endl;
   // return res;
 }
 
@@ -441,6 +529,50 @@ void BPlusTree::bfs( Node* cur, vector<vector<string>> &res, int depth) {
     }
   }
 }
+
+void BPlusTree::printAll() {
+  cout << "printing all keys\n"; 
+  Node * cur = root;
+  int count = 0;
+  while ( cur->getIsLeaf() == false ) {
+    if ( cur->getChildAt(0) != nullptr ) {
+      cur = cur->getChildAt(0);
+    } else {
+      cerr << "not left most\n";
+      cur = cur->getChildAt(1);
+    }
+  }
+  while ( cur != nullptr ) {
+    cur->print();
+    // count++;
+    // cerr << count;
+    cur = cur->getNext();
+  }
+  cout << endl;
+}
+
+void BPlusTree::loadDirPage( string filename ) {
+  ifstream input( filename );
+  string line;
+  // map< string, unsigned int > dirPage;
+  while ( getline( input, line )) {
+    vector<string> pageInfo = split( line );
+    // word lineNum
+    dirPage[ pageInfo[0] ] = stol( pageInfo[1] );
+  }
+  // return dirPage;
+}
+
+vector<string> BPlusTree::split(const std::string& subject) {
+    stringstream ss(subject);
+    istream_iterator<string> begin(ss);
+    istream_iterator<string> end;
+    vector<string> vstrings(begin, end);
+    copy(vstrings.begin(), vstrings.end(), vstrings.begin());
+    return vstrings;
+}
+
+
 
 // void BPlusTree::bulkLoad( vector<FilePointer> ) {
 //   while () {
