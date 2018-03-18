@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Node.h"
+#include <map>
 // #include <utility> 
 #include <math.h> // ceil
 using namespace std;
@@ -20,12 +21,13 @@ class BPlusTree{
 private:
   Node * root;
   int count;
-  long maxPage;
+  unsigned int maxPage;
+  map< string, unsigned int > dirPage;
 public:
   // BTree():root(new Node(true)),count(0){};
-  BPlusTree();  
-  BPlusTree( long maxPage );
-  BPlusTree( string word, FilePointer record, long maxPage );
+  BPlusTree( string filename );  
+  BPlusTree( int maxPage );
+  BPlusTree( string word, FilePointer record, int maxPage );
   ~BPlusTree();
   int getCount(){ return count; };
   bool isRoot( Node * cur ) const { return cur == root; }
@@ -50,6 +52,9 @@ public:
 
   void levelOrder( Node * );
   void bfs( Node* cur, vector<vector<string>> &res, int depth);
+  // vector<string> Split(const std::string& subject);
+  void loadDirPage( string filename );
+  vector<string> split( const string& subject );
 };
 
 #endif

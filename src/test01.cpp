@@ -10,9 +10,9 @@ int main(int argc,char* argv[]) {
   string word1 = "AKey";
   FilePointer fp1 = FilePointer( "A", 10, 1, word1 );
   vector<bool> isTestEnabled;
-  isTestEnabled.push_back(false);
-  isTestEnabled.push_back(false);
   isTestEnabled.push_back(true);
+  isTestEnabled.push_back(false);
+  isTestEnabled.push_back(false);
   int count = 0;
   // BPlusTree bpt = BPlusTree( fp1 );
   BPlusTree bpt = BPlusTree( 200 );

@@ -4,20 +4,21 @@
 // export
 // #endif
 // template<class T>
-BPlusTree::BPlusTree(){
+BPlusTree::BPlusTree( string filename){
   this->root = nullptr;
   count = 0;
   maxPage = 200;
+  loadDirPage( filename );
 }
 
-BPlusTree::BPlusTree( long maxPage ){
+BPlusTree::BPlusTree( int maxPage ){
   this->root = nullptr;
   count = 0;
   maxPage = maxPage;
 }
 
 // root
-BPlusTree::BPlusTree ( string word, FilePointer record, long maxPage ) {
+BPlusTree::BPlusTree ( string word, FilePointer record, int maxPage ) {
   Node * root = new Node( word, record );
   this->root = root;
   this->count = 1;
@@ -549,6 +550,29 @@ void BPlusTree::printAll() {
   }
   cout << endl;
 }
+
+void BPlusTree::loadDirPage( string filename ) {
+  ifstream input( filename );
+  string line;
+  // map< string, unsigned int > dirPage;
+  while ( getline( input, line )) {
+    vector<string> pageInfo = split( line );
+    // word lineNum
+    dirPage[ pageInfo[0] ] = stol( pageInfo[1] );
+  }
+  // return dirPage;
+}
+
+vector<string> BPlusTree::split(const std::string& subject) {
+    stringstream ss(subject);
+    istream_iterator<string> begin(ss);
+    istream_iterator<string> end;
+    vector<string> vstrings(begin, end);
+    copy(vstrings.begin(), vstrings.end(), vstrings.begin());
+    return vstrings;
+}
+
+
 
 // void BPlusTree::bulkLoad( vector<FilePointer> ) {
 //   while () {

@@ -52,6 +52,7 @@ vector<long> FilePointer::getDocList() {
   }
 }
 
+// fetch from index file
 bool FilePointer::fetchFromDisk() {
   return true;
 }
