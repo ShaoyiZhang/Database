@@ -27,3 +27,31 @@ FilePointer::FilePointer( string filename, long int offset, int nDupKeys, string
 bool FilePointer::operator == ( FilePointer const &other ) {
   return word == other.word;
 }
+
+// int getPageID() { };
+// long int getOffset();
+// int getNDupKeys();
+
+vector<long> FilePointer::getDocList() {
+  if ( this->isBuffered == true ) {
+    // docList already in memory, return
+    return this->docList;
+  } else {
+    // fetch from binary index file
+    bool isFetchSuc = this->fetchFromDisk();
+    if ( isFetchSuc == true ) {
+      // fetch success, docList is now in memory
+      this->isBuffered = true;
+      return this->docList;
+    } else {
+      // fetch fail, corrupted index file?
+      // return empty vector
+      cerr << "Fetch Fail!\n"; 
+      return vector<long>();
+    }
+  }
+}
+
+bool FilePointer::fetchFromDisk() {
+  return true;
+}

@@ -4,6 +4,8 @@
 #include "string.h"
 #include <string>
 using namespace std;
+#include <vector>
+#include <iostream>
 /* A class for Record ID
   An instance of this class will include:
   1. index file name ( index directory name in our project )
@@ -32,11 +34,13 @@ public:
   int getNDupKeys();
   string getWord() { return this->word; };
   string getWord() const { return this->word; };
-  
+  bool getIsBuffered() { return this->isBuffered; }
+
   bool operator == ( FilePointer const &other );
+  vector<long> getDocList();
   friend ostream& operator <<( ostream& out, const FilePointer& fp );
   // friend ostream& operator<<(ostream& out, const Vector2D& vec) // output
-
+  bool fetchFromDisk();
 private:
   char * filename; // index file name a.k.a. directory name for the index files
   int pageID; // index page id
@@ -47,7 +51,8 @@ private:
   be created automatically and will be transparent to the B Plus Tree. */
   int nDupKeys;
 
-  
+  bool isBuffered;
+  vector<long> docList;
   // NOTE: For debugging and test, we will add an extra filed: 
   // the keyword associated with the RIDs.
   // Remove in release to improve performance.

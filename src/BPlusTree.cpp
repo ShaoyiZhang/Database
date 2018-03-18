@@ -7,13 +7,21 @@
 BPlusTree::BPlusTree(){
   this->root = nullptr;
   count = 0;
+  maxPage = 200;
+}
+
+BPlusTree::BPlusTree( long maxPage ){
+  this->root = nullptr;
+  count = 0;
+  maxPage = maxPage;
 }
 
 // root
-BPlusTree::BPlusTree ( string word, FilePointer record ) {
+BPlusTree::BPlusTree ( string word, FilePointer record, long maxPage ) {
   Node * root = new Node( word, record );
   this->root = root;
-  count = 1;
+  this->count = 1;
+  this->maxPage = maxPage;
 }
 
 BPlusTree::~BPlusTree(){
@@ -103,8 +111,9 @@ void BPlusTree::insert( Node * parent, Node * child ) {
   if ( parent->size() == parent->childSize() ) {
     // insert child at end, inserting to a new root?
     cerr << "GGWP...\n";
-    parent->setChildAt( parent->childSize(), child );
-    parent->incrChildSize();
+    // parent->setChildAt( parent->childSize(), child );
+    parent->insertChild( child );
+    // parent->incrChildSize();
   }
   else {
     // general NoneLeafNode case
@@ -133,6 +142,8 @@ void BPlusTree::insert( Node * parent, Node * child ) {
   
   // if the none leaf node is FULL
   // need to split
+  cerr << " parent child size before invoking splitRoot/non leaf "
+       << parent->childSize() << " keySize: " << parent->size() << "\n";
   if ( parent->childSize() == M + 1 ){
     // levelOrder(root);    
     cerr << "parent ALSO need to split\n";
@@ -324,7 +335,7 @@ void BPlusTree::insert( string word, FilePointer record ){
   cerr << "insert continue after insert helper return\n";
 
   int childIndex = candidate->indexOfChild( word );
-  cerr << "child index: " << childIndex << " childSize: " << candidate->childSize() << "\n";  
+  cerr << "deepest internal node child index: " << childIndex << " childSize: " << candidate->childSize() << "\n";  
   if ( childIndex == candidate->childSize() || 
        candidate->getChildAt(childIndex) == nullptr ) {
     // we scaned all children, but the deseried leaf node is missing
@@ -335,7 +346,7 @@ void BPlusTree::insert( string word, FilePointer record ){
     // create new leaf and insert 
     Node * newLeaf = new Node( word, record, true, candidate );
     candidate->setChildAt( childIndex, newLeaf );
-    candidate->incrChildSize();
+    // candidate->incrChildSize();
     return;
   }
 
@@ -344,7 +355,7 @@ void BPlusTree::insert( string word, FilePointer record ){
 
   // leaf node 
   int index = candidate->indexOfKey( word );
-  cerr << "insert index: " << index << endl;
+  cerr << "insert index in leaf: " << index << endl;
   cerr << "before insert key value\n";
   if ( candidate->size() == 0 || candidate->size() == index ) {
     // just use push_back
@@ -430,6 +441,12 @@ void BPlusTree::bfs( Node* cur, vector<vector<string>> &res, int depth) {
     }
   }
 }
+
+// void BPlusTree::bulkLoad( vector<FilePointer> ) {
+//   while () {
+    
+//   }
+// }
 /*
 bool BPlusTree::remove( string word ) {
   // use insert helper to find the parent of leaf node
