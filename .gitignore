@@ -1,6 +1,7 @@
 ../.vscode/*
 reference/
 en_decode/
+src/indexFileGenerator/test*
 build/
 data/
 # ignore the gigantic datafile

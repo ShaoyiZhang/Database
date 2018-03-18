@@ -3,19 +3,20 @@ CXX=g++
 
 CXXFLAGS = -std=c++11 -Wall -Wextra -Wno-unused-parameter -Wno-unused-private-field -g
 
-#CXXFLAGS = -std=c++11 -Wall -Wextra -Werror
+# CXXFLAGS = -std=c++11 -Wall -Wextra -Werror
 
 
 BINARIES = main
+TESTS = test01
 #test01
 
 all: ${BINARIES}
 
-main: Graph.o BTree.o Main.o
+main: Graph.o BPlusTree.o Main.o
 	${CXX} $^ -o $@
 
 #test01.o : File.cpp Node.cpp test01.cpp
-test01: File.o Node.o test01.o
+test01: File.o Node.o BPlusTree.o test01.o
 	${CXX} $^ -o $@
 
 #tree: BTree.o Main.o TreeNode.o
@@ -24,9 +25,9 @@ test01: File.o Node.o test01.o
 #test02: test02.o Student.o HashTable.o
 #	${CXX} $^ -o $@
 
-tests:${BINARIES}
-#	./test01
-	./main
+tests:${TESTS}
+	./test01
+	# ./main
 
 
 LEAKTESTS=test01
@@ -37,4 +38,4 @@ leaktest01: main
 	- valgrind -q --dsymutil=yes --leak-check=full ./main
 
 clean:
-	/bin/rm -f ${BINARIES} *.o
+	/bin/rm -f ${BINARIES} ${TESTS} *.o

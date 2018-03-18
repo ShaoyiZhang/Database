@@ -9,30 +9,12 @@
     ```
         line       content
 
-          1         [metaData] (one line)
-          2+        hash(word_i)    prev    next    FilePointer
+          0         [metaData] (one line)
+          1+        hash(word_i)  <offset list>
 
     ```
-    ```
-          2          xxx             -1       5      filePtrA
-          3          yyy             -1      -1      filePtrB
-          4          zzz             -1      -1      filePtrC
-          5          xxx              2      -1      filePtrD
-    ```
-
-        where FilePointer is ( file name, offset, numOfDupKey ), so each FilePointer is "pointing" to a page of the secondary layer
-
-    - secondary layer (multiple files on disk):
-
-        - each file is essentially a "page", which consists a list of document IDs
 
 
+    - secondary layer (a very large file on disk):
 
-***
-## Dependencies
-
-- It borrows FilePointer from file.h, ...
-
-## some useful codes
-
-int tempVal = stoi(tempraryStr.substr(0, 8), nullptr, 2);
+        - each line is essentially a "page", which consists a list of document IDs
