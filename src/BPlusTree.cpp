@@ -345,13 +345,6 @@ Node * BPlusTree::insertExisting( string word, FilePointer & record, Node * leaf
   int index = leaf->indexOfFilePointer( word );
   leaf->getFPAt( index )->appendDocList( record.getDocList() );
   return leaf;
-  // while ( index < leaf->size() ) {
-  //   if ( leaf->getKeyAt( index ) == word ) {
-  //     break;
-  //   }
-  //   index++;
-  // }
-  
 }
 
 // candidate = deepest internal node
