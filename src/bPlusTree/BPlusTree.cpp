@@ -24,8 +24,18 @@ BPlusTree::BPlusTree( string filename, int maxPage ){
   this->root = nullptr;
   this->count = 0;
   this->maxPage = maxPage;
-  this->filename = filename;  
-  loadDirPage( filename );
+  this->filename = filename;
+  this->dirFilename = "haha"; 
+  loadDirPage( this->dirFilename );
+}
+
+BPlusTree::BPlusTree( string filename, string dirFilename, int maxPage ){
+  this->root = nullptr;
+  this->count = 0;
+  this->maxPage = maxPage;
+  this->filename = filename;
+  this->dirFilename = dirFilename; 
+  loadDirPage( this->dirFilename );
 }
 
 BPlusTree::BPlusTree( string filename, int maxPage, msu & dirPage ){
@@ -498,9 +508,8 @@ void BPlusTree::loadDirPage( string filename ) {
   while ( getline( input, line )) {
     vector<string> pageInfo = split( line );
     // word lineNum
-    dirPage[ pageInfo[0] ] = stol( pageInfo[1] );
+    dirPage[ pageInfo[0] ] = stoi( pageInfo[1] );
   }
-  // return dirPage;
 }
 
 vector<string> BPlusTree::split(const std::string& subject) {

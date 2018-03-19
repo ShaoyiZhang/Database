@@ -19,6 +19,8 @@ main: Graph.o BPlusTree.o Main.o
 test01: File.o Node.o BPlusTree.o test01.o
 	${CXX} $^ -o $@
 
+index: indexFileGenerator/indexGenerator.o
+	${CXX} $^ -o $@
 #tree: BTree.o Main.o TreeNode.o
 #	${CXX} $^ -o $@
 

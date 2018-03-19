@@ -11,7 +11,7 @@ int main(int argc,char* argv[]) {
   // vector<FilePointer> fps;
   string word1 = "AKey";
   // FilePointer fp1 = FilePointer( "A", 10, 1, word1 );
-  vector<bool> isTestEnabled = { true, false, true, false, true };
+  vector<bool> isTestEnabled = { false, false, false, true };
   // isTestEnabled.push_back(true);
   // isTestEnabled.push_back(false);
   // isTestEnabled.push_back(false);
@@ -110,7 +110,7 @@ int main(int argc,char* argv[]) {
       lineNum += 10;
     }
     cerr << myDirPage.size() << " words " << endl;
-    BPlusTree bpt3 = BPlusTree("some file", 200, myDirPage );    
+    BPlusTree bpt3 = BPlusTree("idx2", "word.line.index", 200 );
     bpt3.bulkLoad();
     bpt3.printAll();        
 

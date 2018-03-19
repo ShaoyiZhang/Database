@@ -25,13 +25,14 @@ private:
   unsigned int maxPage;
   msu dirPage;
   string filename;
+  string dirFilename;
 public:
   // BTree():root(new Node(true)),count(0){};
   BPlusTree( string filename );
   BPlusTree( int maxPage );  
-  BPlusTree( string filename, int maxPage );
+  BPlusTree( string filename, string dirFilename, int maxPage );
   BPlusTree( string filename, int maxPage, msu & dirPage );
-
+  BPlusTree( string filename, int maxPage );
   BPlusTree( string word, FilePointer record, int maxPage );
   ~BPlusTree();
   int getCount(){ return count; };
