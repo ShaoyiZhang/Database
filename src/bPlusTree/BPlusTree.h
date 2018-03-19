@@ -17,7 +17,7 @@ extern const int L; // num of max profiles
 // export
 // #endif
 // template<class T>
-typedef map< string, unsigned int > msu;
+// typedef map< string, unsigned int > msu;
 class BPlusTree{
 private:
   Node * root;
@@ -25,13 +25,15 @@ private:
   unsigned int maxPage;
   msu dirPage;
   string filename;
+  string dirFilename;
+  int pageSize = 500;
 public:
   // BTree():root(new Node(true)),count(0){};
   BPlusTree( string filename );
   BPlusTree( int maxPage );  
-  BPlusTree( string filename, int maxPage );
+  BPlusTree( string filename, string dirFilename, int maxPage );
   BPlusTree( string filename, int maxPage, msu & dirPage );
-
+  BPlusTree( string filename, int maxPage );
   BPlusTree( string word, FilePointer record, int maxPage );
   ~BPlusTree();
   int getCount(){ return count; };
@@ -39,11 +41,14 @@ public:
   
   // return pointer to leaf node
   void insert( string word, FilePointer record );
-  Node * insert( string word, FilePointer record, Node * start );
+  Node * insert( string word, FilePointer & record, Node * start );
   void insert( Node * parent, Node * child, string key );
   bool remove( string word );
   Node * insertHelper( string word, Node * start ); // find internal node candidate
-    void insertEntry(string word);
+  void insertEntry(string word, int docNum );
+  Node * insertNew( string word, FilePointer & record, Node * canmdidate );
+  Node * insertExisting( string word, FilePointer & record, Node * leaf );
+
   void splitNoneLeaf( Node * cur );
   // return leaf containing right half
   Node * splitLeaf( Node * cur, int childIndex );
@@ -53,10 +58,10 @@ public:
   bool search( string word );
   // modify the pointer to the leaf and return the index of key in that leaf
   // int search( string word, Node * leaf );
-  vector<int> getDocVec( string word );
-  vector<int> searchMultiple( vector<string> wordList );
+  vector<string> getDocVec( string word );
+  vector<string> searchMultiple( vector<string> wordList );
 
-  Node * searchHelper( string word ); // find leaf node candidate
+  Node * searchHelper( string word, Node * start ); // find leaf node candidate
   Node * getRoot() { return root; };
   void printAll();
   void printAll( Node * root );

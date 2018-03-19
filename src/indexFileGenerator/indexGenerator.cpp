@@ -53,6 +53,9 @@ int main(int argc, const char * argv[]){
             }
 
             // cout << pageSize << endl;
+            ofstream pageSizeFile("pageSize.txt");
+            pageSizeFile << pageSize;
+            pageSizeFile.close();
             string indexFile = parsedResult.at(3);
             string textFile = parsedResult.at(2);
             buildIndex(textFile, indexFile, pageSize);

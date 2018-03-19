@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-// #include "?.h" // ?.h
+#include "bPlusTree/BPlusTree.h"
 using namespace std;
 
 extern int MAX;
@@ -22,22 +22,24 @@ void splitStrToVec_whitespace(std::vector<std::string> &v, const string& str) {
 
 // just for test
 // load index file
-void load(const string& indexFile){
+void load(BPlusTree* bpt, const string& indexFile, const string& dirName, unsigned int pageSize){
     std::cout << "now loading indexfile: " << indexFile << endl;
+    // BPlusTree* bPT = new BPlusTree("word.line.index");
+    bpt->setFileName(indexFile);
+    bpt->setDirName(dirName);
+    bpt->setMaxPage(pageSize);
+    bpt->loadDirPage(dirName);
+    bpt->bulkLoad();
 }
 
-// merge index files
-void merge(const string& indexFile, const string& indexFile_merge){
-    std::cout << "now merging indexfile: " << indexFile_merge << " into: " << indexFile << endl;
-}
 
 // insert new doc into indexfile
-void insert(const string& indexFile, const string& docFileName) {
-    std::cout << "now inserting doc file: " << docFileName << " into: " << indexFile << endl;
+void insert(BPlusTree* bpt, const string& docFileName) {
+    std::cout << "now inserting doc file: " << docFileName << endl;
 }
 
 // delete doc from indexFile
-void remove(const string& indexFile, const string& docFileName) {
+void remove(BPlusTree* bpt, const string& indexFile, const string& docFileName) {
     std::cout << "now deleting doc file: " << docFileName << " from: " << indexFile << endl;
 }
 
@@ -48,6 +50,16 @@ void remove(const string& indexFile, const string& docFileName) {
 // }
 int main(int argc,char* argv[])
 {
+    int pageSize = 8096;
+    try {
+        ifstream pageSizeFile("indexFileGenerator/pageSize.txt");
+        pageSizeFile >> pageSize;
+    } catch (exception &e){
+        cout << "pageSize file not found!" << endl;
+    }
+    
+
+    BPlusTree* bpt = new BPlusTree();
 
     std::string indexFile = "";  // should be a class object
     while (!std::cin.eof()) {
@@ -59,7 +71,7 @@ int main(int argc,char* argv[])
         }
         else if (thisLine.find("load") != std::string::npos) { // > load [index file]: Loads a B+ index.
             indexFile = thisLine.substr(thisLine.find("load")+5);
-            load(indexFile);
+            load(bpt, indexFile, "indexGenerator/word.line.index", pageSize );
         }
         else if (thisLine.find("merge") != std::string::npos) { // > merge [index file]: Merge the current index file with the second index file, and update the index file on the disk.
             string indexFile_merge = thisLine.substr(thisLine.find("merge")+6);
@@ -68,7 +80,7 @@ int main(int argc,char* argv[])
         }
         else if (thisLine.find("insert") != std::string::npos) { // > insert [document name]: Insert the word:document name pair into the index.
             std::string docFileName = thisLine.substr(thisLine.find("insert")+7);
-            insert(indexFile, docFileName);
+            insert(bpt,docFileName);
             // assume that load takes the address of the new document and adds its contents into the index file
         }
         else if (thisLine.find("delete") != std::string::npos) { // delete [document name]: Removes a document with the given name from the index
