@@ -17,7 +17,7 @@ extern const int L; // num of max profiles
 // export
 // #endif
 // template<class T>
-typedef map< string, unsigned int > msu;
+// typedef map< string, unsigned int > msu;
 class BPlusTree{
 private:
   Node * root;
@@ -26,6 +26,7 @@ private:
   msu dirPage;
   string filename;
   string dirFilename;
+  int pageSize = 500;
 public:
   // BTree():root(new Node(true)),count(0){};
   BPlusTree( string filename );
@@ -57,8 +58,8 @@ public:
   bool search( string word );
   // modify the pointer to the leaf and return the index of key in that leaf
   // int search( string word, Node * leaf );
-  vector<int> getDocVec( string word );
-  vector<int> searchMultiple( vector<string> wordList );
+  vector<string> getDocVec( string word );
+  vector<string> searchMultiple( vector<string> wordList );
 
   Node * searchHelper( string word, Node * start ); // find leaf node candidate
   Node * getRoot() { return root; };

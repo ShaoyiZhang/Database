@@ -8,7 +8,7 @@
 #include <cstdio>
 using namespace std;
 
-string getLine(const string& filename,unsigned int startLine, unsigned int pageSize) {
+string getLine(const string& filename, unsigned int startLine, unsigned int pageSize) {
     unsigned int replacePos = 0; // line number
 
     // open file
@@ -102,7 +102,7 @@ unsigned int insertDist(const string& filename,unsigned int startLine, unsigned 
     return replacePos;
 }
 
-int main(){
-    insertDist("text", 6, 10, "e", 7);
-    return 0;
-}
+// int main(){
+//     insertDist("text", 6, 10, "e", 7);
+//     return 0;
+// }

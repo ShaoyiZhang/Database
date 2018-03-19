@@ -21,6 +21,7 @@ using namespace std;
   the file given a target word. These method will take 
 */
 
+typedef map< string, unsigned int > msu;
 
 class FilePointer {
 public:
@@ -41,11 +42,11 @@ public:
   bool getIsBuffered() { return this->isBuffered; }
 
   bool operator == ( FilePointer const &other );
-  vector<int> getDocList();
-  void appendDocList( vector<int> newDocList );
+  vector<string> getDocList( msu & dirPage, const string& filename, unsigned int pageSize );
+  void appendDocList( vector<string> newDocList );
   friend ostream& operator <<( ostream& out, const FilePointer& fp );
   // friend ostream& operator<<(ostream& out, const Vector2D& vec) // output
-  bool fetchFromDisk();
+  bool fetchFromDisk( msu & dirPage, const string& filename, unsigned int pageSize );
 private:
   string filename; // index file name a.k.a. directory name for the index files
   int pageID; // index page id
@@ -57,7 +58,7 @@ private:
   int nDupKeys;
 
   bool isBuffered;
-  vector<int> docList;
+  vector<string> docList;
   // NOTE: For debugging and test, we will add an extra filed: 
   // the keyword associated with the RIDs.
   // Remove in release to improve performance.

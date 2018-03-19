@@ -11,7 +11,7 @@ int main(int argc,char* argv[]) {
   // vector<FilePointer> fps;
   string word1 = "AKey";
   // FilePointer fp1 = FilePointer( "A", 10, 1, word1 );
-  vector<bool> isTestEnabled = { false, false, false, true };
+  vector<bool> isTestEnabled = { false, false, true, false };
   // isTestEnabled.push_back(true);
   // isTestEnabled.push_back(false);
   // isTestEnabled.push_back(false);
@@ -112,7 +112,9 @@ int main(int argc,char* argv[]) {
     cerr << myDirPage.size() << " words " << endl;
     BPlusTree bpt3 = BPlusTree("idx2", "word.line.index", 200 );
     bpt3.bulkLoad();
-    bpt3.printAll();        
+    bpt3.printAll();
+    vector<string> words = { "sushi", "sweaters", "swept", "swim" };
+    bpt3.searchMultiple( words );        
 
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     std::cout<<"printf: "<< duration <<'\n';

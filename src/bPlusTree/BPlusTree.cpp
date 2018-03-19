@@ -353,7 +353,7 @@ Node * BPlusTree::insert( string word, FilePointer & record, Node * start ) {
 // update the tree in memory and modify the index file on disk
 Node * BPlusTree::insertExisting( string word, FilePointer & record, Node * leaf ) {
   int index = leaf->indexOfFilePointer( word );
-  leaf->getFPAt( index )->appendDocList( record.getDocList() );
+  leaf->getFPAt( index )->appendDocList( record.getDocList( dirPage, filename, pageSize ) );
   return leaf;
 }
 
@@ -422,20 +422,20 @@ Node * BPlusTree::insertNew( string word, FilePointer & record, Node * candidate
 }
 
 void BPlusTree::levelOrder( Node * cur ) {
-  cout << "Current tree:\n";
+  cerr << "Current tree:\n";
   if ( cur == nullptr ) {
-    cout << "Tree is empty\n";
+    cerr << "Tree is empty\n";
     return;
   }
   vector<vector<string>> res;
   dfs( cur, res, 0 );
   for ( int i = 0; i < res.size(); i++ ) {
     for ( int j = 0; j < res[i].size(); j++ ) {
-      cout << res[i][j] << " ";
+      cerr << res[i][j] << " ";
     }
-    cout << endl;
+    cerr << endl;
   }
-  cout << endl;
+  cerr << endl;
   // return res;
 }
 
@@ -512,7 +512,7 @@ void BPlusTree::loadDirPage( string filename ) {
   }
 }
 
-vector<string> BPlusTree::split(const std::string& subject) {
+vector<string> BPlusTree::split( const std::string& subject ) {
     stringstream ss(subject);
     istream_iterator<string> begin(ss);
     istream_iterator<string> end;
@@ -553,27 +553,27 @@ void BPlusTree::printBetween( string start, string end ) {
   }
 }
 
-vector<int> BPlusTree::getDocVec( string word ) {
+vector<string> BPlusTree::getDocVec( string word ) {
   Node * leaf = searchHelper( word, this->root );
   if ( leaf != nullptr ) {
     int index = leaf->indexOfKey( word );    
-    return leaf->getFPAt( index )->getDocList();
+    return leaf->getFPAt( index )->getDocList( this->dirPage, filename, pageSize );
   } else {
-    return vector<int> ();
+    return vector<string> ();
   }
 }
 
-vector<int> BPlusTree::searchMultiple( vector<string> wordList ) {
+vector<string> BPlusTree::searchMultiple( vector<string> wordList ) {
   if ( wordList.size() == 0 ) {
-    return vector<int>();
+    return vector<string>();
   }
   // sort words to maximize buffer utilization
   sort( wordList.begin(), wordList.end() );
   // wordList[0];
   Node * leaf;
-  vector<int> v1 = this->getDocVec( wordList[0] );
-  vector<int> intersect = v1;  
-  vector<int> v2;
+  vector<string> v1 = this->getDocVec( wordList[0] );
+  vector<string> intersect = v1;  
+  vector<string> v2;
   for ( int i = 1; i < wordList.size(); i++ ) {
     v2 = this->getDocVec( wordList[i] );
     // sort( v2.begin(), v2.end() );
