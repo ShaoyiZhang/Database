@@ -25,32 +25,30 @@ using namespace std;
 class FilePointer {
 public:
   FilePointer();
-  FilePointer( const char *filename, long int offset, int nDupKeys );
-  FilePointer( string filename, long int offset, int nDupKeys  );
+  // FilePointer( string filename, int offset, int nDupKeys );
+  // FilePointer( string filename, int offset, int nDupKeys );
   // Test only
-  FilePointer( const char *filename, long int offset, int nDupKeys, string word );
-  FilePointer( string filename, long int offset, int nDupKeys, string word );
+  FilePointer( string filename, int offset, string word, int nDupKeys = 0 );
+  // FilePointer( string filename, int offset, int nDupKeys, string word );
   string getFileName() { return this->filename; }
   string getFileName() const { return this->filename; }
   
   int getPageID();
-  long int getOffset();
+  int getOffset();
   int getNDupKeys();
   string getWord() { return this->word; };
   string getWord() const { return this->word; };
   bool getIsBuffered() { return this->isBuffered; }
 
   bool operator == ( FilePointer const &other );
-  vector<long> getDocList();
+  vector<int> getDocList();
   friend ostream& operator <<( ostream& out, const FilePointer& fp );
   // friend ostream& operator<<(ostream& out, const Vector2D& vec) // output
   bool fetchFromDisk();
-
-
 private:
-  char * filename; // index file name a.k.a. directory name for the index files
+  string filename; // index file name a.k.a. directory name for the index files
   int pageID; // index page id
-  long int offset; // offset of the RID for the keyword
+  int offset; // offset of the RID for the keyword
 
   /* a keyword might appear multiple times in different documents. Our database will 
   keep the RIDs of duplicated keywords in the same index page. Overflow pages will
@@ -58,7 +56,7 @@ private:
   int nDupKeys;
 
   bool isBuffered;
-  vector<long> docList;
+  vector<int> docList;
   // NOTE: For debugging and test, we will add an extra filed: 
   // the keyword associated with the RIDs.
   // Remove in release to improve performance.
