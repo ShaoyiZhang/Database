@@ -85,6 +85,7 @@ private:
   // void IncrOccupancy() { occupancy++; };
   // Node ** getNextLevel( string key );
   int indexOfChild( string key );
+  bool isContain( string word );
   // Node* Add( Node* child, Node* root);
   // Node* Add(string key, FilePointer fp, Node* root);
   Node ** getChildren() { return children; }

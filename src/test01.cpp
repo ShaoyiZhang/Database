@@ -11,7 +11,7 @@ int main(int argc,char* argv[]) {
   // vector<FilePointer> fps;
   string word1 = "AKey";
   // FilePointer fp1 = FilePointer( "A", 10, 1, word1 );
-  vector<bool> isTestEnabled = { true, false, false, false, true };
+  vector<bool> isTestEnabled = { true, false, true, false, true };
   // isTestEnabled.push_back(true);
   // isTestEnabled.push_back(false);
   // isTestEnabled.push_back(false);

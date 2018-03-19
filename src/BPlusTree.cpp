@@ -54,34 +54,37 @@ void BPlusTree::insert( string word, FilePointer record ) {
 }
 
 // Return a pointer to a leaf node that might contain the word
-Node * BPlusTree::searchHelper( string word ) {
+Node * BPlusTree::searchHelper( string word, Node * start ) {
   cerr << "inside search helper\n";
   if ( this->root == nullptr ) {
     // all elements in the tree has been deleted
     cerr << "empty tree\n";
     return root;//make_pair( nullptr, -1 );
   }
-  Node * cur = this->root;
-  while ( cur->getIsLeaf() == false ) {
+  Node * cur = start;
+  while ( cur != nullptr && cur->getIsLeaf() == false ) {
     // cerr << "try move down\n";
-    Node ** childrenPtr = cur->getChildren();
+    // Node ** childrenPtr = cur->getChildren();
     // cerr << "address of childrenPtr: " << childrenPtr << endl;
     int index = cur->indexOfChild( word ) ;
-    // cerr << "index of child: " << index << " childsize: " << cur->childSize() <<endl;
+    cerr << "index of child: " << index << " childsize: " << cur->childSize() <<endl;
     if ( index == cur->childSize() ) {
       // we scaned all children, but the deseried leaf node is missing
       // we will return a nullptr
       cerr << "child pointer does NOT exist\n";
     }
     // retrieve the leaf node pointer and return to caller
-    cur = cur->getChildAt(index);   
+    cur = cur->getChildAt(index); 
+    // cerr <<"alive!\n"; 
   }
+    // cerr <<" still alive!\n"; 
+  
   return cur;
 }
 
 // return the leaf node and the index of the filepointer
 bool BPlusTree::search( string word ) {
-  Node * cur = searchHelper( word );
+  Node * cur = searchHelper( word, this->root );
   cerr << " search size " << cur->size() << endl;
   
   int index = cur->indexOfFilePointer( word );
@@ -318,8 +321,33 @@ Node * BPlusTree::insert( string word, FilePointer record, Node * start ) {
   // find leaf node to insert record, potentially split nodes recursively
   // candidate is a leaf node
   
-  Node * candidate = insertHelper( word, start ); // deepest internal node
-  
+  Node * deepestInternal = insertHelper( word, start ); // deepest internal node
+  // if word not already in the tree, insert normally
+  cerr << "HERE!!\n";
+  Node * leaf = searchHelper( word, deepestInternal );
+  // null could mean inserting to left most or right most
+  // OR righ
+  if ( leaf != nullptr ) {
+    cerr << leaf->indexOfKey( word ) << endl;
+  }
+  if ( leaf == nullptr || ( leaf != nullptr && leaf->isContain( word ) == false ) ) {
+    cerr << "insert new\n";
+    return insertNew( word, record, deepestInternal );
+  } else {
+    cerr << "insert existing\n";
+    return insertExisting( word, record, leaf );
+  }
+}
+
+// the key is already in the tree/index file
+// update the tree in memory and modify the index file on disk
+Node * BPlusTree::insertExisting( string word, FilePointer record, Node * leaf ) {
+  // int index = leaf->indexOfKey( );
+  return nullptr;
+}
+
+// candidate = deepest internal node
+Node * BPlusTree::insertNew( string word, FilePointer record, Node * candidate ) {
   // cerr << "tree after insert helper:\n";
   // this->levelOrder( this->root );
   this->levelOrder( candidate );
@@ -329,7 +357,7 @@ Node * BPlusTree::insert( string word, FilePointer record, Node * start ) {
   cerr << "deepest internal node child index: " << childIndex << " childSize: " << candidate->childSize() << "\n";  
   Node * cur = candidate->getChildAt(childIndex);
   if ( childIndex == candidate->childSize() || 
-       cur == nullptr ) {
+      cur == nullptr ) {
     // we scaned all children, but the deseried leaf node is missing
     cerr << "child pointer does NOT exist\n";
   
@@ -340,19 +368,9 @@ Node * BPlusTree::insert( string word, FilePointer record, Node * start ) {
     if ( childIndex == 0 ) {
       Node * next = candidate->getChildAt(1);
       newLeaf->setNext(next);
-      // newLeaf->
-
     } 
-    // Node * pre = candidate->getChildAt( childIndex - 1 );    
-    // if ( pre != nullptr ) {
-    //   newLeaf->setNext( pre->getNext() );
-    //   newLeaf->setPrevious( pre );
-    //   pre->setNext( newLeaf );
-    // }
 
     candidate->setChildAt( childIndex, newLeaf );
-    // candidate->getChildAt( childIndex )setNext( )
-    // candidate->incrChildSize();
     return newLeaf;
   }
 
@@ -363,6 +381,7 @@ Node * BPlusTree::insert( string word, FilePointer record, Node * start ) {
   int index = candidate->indexOfKey( word );
   cerr << "insert index in leaf: " << index << endl;
   cerr << "before insert key value\n";
+
   if ( candidate->size() == 0 || candidate->size() == index ) {
     // just use push_back
     cerr << "append\n";
@@ -513,7 +532,7 @@ void BPlusTree::bulkLoad() {
 
 // keyword start and end must be inside the tree
 void BPlusTree::printBetween( string start, string end ) {
-  Node * startNode =  searchHelper( start );
+  Node * startNode =  searchHelper( start, this->root );
   Node * leaf = startNode->getChildAt( startNode->indexOfChild( start) );
   while ( leaf != nullptr ) {
     for ( int i = 0; i < leaf->size(); i++ ) {
@@ -524,7 +543,7 @@ void BPlusTree::printBetween( string start, string end ) {
 }
 
 vector<int> BPlusTree::getDocVec( string word ) {
-  Node * leaf = searchHelper( word );
+  Node * leaf = searchHelper( word, this->root );
   if ( leaf != nullptr ) {
     int index = leaf->indexOfKey( word );    
     return leaf->getFPAt( index )->getDocList();

@@ -290,3 +290,17 @@ void Node::removeKeyAt( int index ) {
   }
   nKeys--;
 }
+
+bool Node::isContain( string word ) {
+  int index = -1;
+  while ( index < nKeys - 1 ) {
+    if ( *( keys[index + 1] ) == word ) {
+      return true;
+    }
+    index++;
+  }
+  return false;
+  // if ( index == -1 ) {
+  //   return false;
+  // }
+}

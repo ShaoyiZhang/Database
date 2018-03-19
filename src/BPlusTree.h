@@ -44,6 +44,9 @@ public:
   bool remove( string word );
   Node * insertHelper( string word, Node * start ); // find internal node candidate
   void insertEntry(string word, int docNum );
+  Node * insertNew( string word, FilePointer record, Node * canmdidate );
+  Node * insertExisting( string word, FilePointer record, Node * leaf );
+
   void splitNoneLeaf( Node * cur );
   // return leaf containing right half
   Node * splitLeaf( Node * cur, int childIndex );
@@ -56,7 +59,7 @@ public:
   vector<int> getDocVec( string word );
   vector<int> searchMultiple( vector<string> wordList );
 
-  Node * searchHelper( string word ); // find leaf node candidate
+  Node * searchHelper( string word, Node * start ); // find leaf node candidate
   Node * getRoot() { return root; };
   void printAll();
   void printAll( Node * root );
