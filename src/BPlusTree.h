@@ -43,6 +43,7 @@ public:
   void insert( Node * parent, Node * child, string key );
   bool remove( string word );
   Node * insertHelper( string word, Node * start ); // find internal node candidate
+    void insertEntry(string word);
   void splitNoneLeaf( Node * cur );
   // return leaf containing right half
   Node * splitLeaf( Node * cur, int childIndex );

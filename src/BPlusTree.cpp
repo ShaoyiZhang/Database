@@ -129,6 +129,12 @@ void BPlusTree::insert( Node * parent, Node * child, string key ) {
   }
   // return NULL;
 }
+
+void BPlusTree::insertEntry(string word){
+    FilePointer fp = FilePointer();
+    this->insert(word, fp);
+}
+
 void BPlusTree::splitRoot( Node * cur ) {
   cerr << "split root!\n";
   this->levelOrder( this->root );
