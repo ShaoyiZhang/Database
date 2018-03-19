@@ -76,7 +76,7 @@ Node::Node( string word, FilePointer fp, bool isLeaf,
   this->keys[0] = new string( word );
   this->filePointers[0] = new FilePointer( fp ); // copy constructor
   nKeys = 1;
-  nChild = 0; // leaf node 
+  nChild = 0; // leaf node
 }
 
 // return the index of a given key in the keys array

@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <map>
 #include <unordered_set>
+#include <iterator>
+#include <algorithm>
+#include <chrono>
 using namespace std;
 
 void buildIndex(const string& textFile, const string& indexFile, unsigned int pageSize);
@@ -63,10 +66,10 @@ int main(int argc, const char * argv[]){
 }
 
 void buildIndex(const string& textFile, const string& indexFile, unsigned int pageSize){
-
+    auto start = std::chrono::system_clock::now();
+    time_t start_time = chrono::system_clock::to_time_t(start);
+// ========== read from data file ================
     map<string, unordered_set<unsigned int>> index;
-
-    ofstream outfile(indexFile);
     ifstream infile(textFile);
     string line;
     while (getline(infile, line)) {
@@ -74,19 +77,28 @@ void buildIndex(const string& textFile, const string& indexFile, unsigned int pa
         vector<string> words{istream_iterator<string>{iss}, istream_iterator<string>{}};
         string doc = words[0];
         unsigned int line_no = stoi(doc.substr(3, doc.length()));
-        // cerr << line_no << endl;
+        // cerr << "l" << line_no << " ";
         for (vector<string>::iterator iter = words.begin() + 1; iter != words.end(); iter++) {
-            if (sizeof(iter)>=256) continue;
+            if (sizeof(*iter)>=256) continue;
             index[*iter].insert(line_no);
-//            index[*iter].push_back(line_no);
+   //       index[*iter].push_back(line_no);
         }
     }
-    map<string, unsigned long> wordLineIndex;
+    // cerr << "\n";
+    infile.close();
+
+
+    ofstream outfile(indexFile);
+    ofstream helperIndex("word.line.index");
+
     unsigned long lineBuilt = 0; // number of line built so far
+    string nextWord = "";
     for (auto &t: index) {
+    // for (map<string, unordered_set<unsigned int>>) {
         lineBuilt++;
-        wordLineIndex.insert(pair<string, unsigned long>(t.first,lineBuilt));
+	// cerr << "lb" << lineBuilt << " ";
         outfile << t.first << "\t";
+        helperIndex << t.first << " " << lineBuilt << "\n";
         // cerr << t.first << "\t";
         unsigned int currSize = 0; // byte size of current string line!!
         unsigned int idPrinted = 0;// number of ids printed
@@ -94,11 +106,13 @@ void buildIndex(const string& textFile, const string& indexFile, unsigned int pa
         unsigned int lineNum = 0;
 
         currSize = (t.first+ "\t").size();
-        if (currSize>=256) continue;
+
+        if (currSize >= 256) continue;
         auto it = t.second.begin();
 
         while (idPrinted < totalSize) {
-            if (currSize < pageSize) {
+            if (currSize < pageSize - 8 ) {
+                // always save some space at the end, make sure it's exactly pageSize per page(line)
                 outfile << *it << " ";
                 // cerr << *it << " ";
                 currSize += ((to_string(*it) + " ").size());
@@ -106,24 +120,36 @@ void buildIndex(const string& textFile, const string& indexFile, unsigned int pa
                 it++;
             } else {
                 lineBuilt++;
-                outfile << endl;
+                // cerr << "lb" << lineBuilt << " ";
+	       	       outfile << endl;
                 // cerr << endl;
                 outfile << t.first << "\t";
                 // cerr << t.first << "\t";
                 currSize = (t.first+ "\t").size();
             }
         }
+
+        // now we have printed out every doc id of current word
+        // if currSize < pageSize, this page is still not full, we have to make it "full" with padding "-"s
+        // to make the index "easy" to read using of fseek
+        string zeroStr = "-";
+        unsigned int zeroSize = zeroStr.size();
+        while (currSize < pageSize - 1) {
+            outfile << "-";
+            currSize += zeroSize;
+        }
         outfile << endl;
-        // cerr << endl;
     }
-
-    infile.close();
+    // cerr << endl;
+    helperIndex.close();
     outfile.close();
+    auto end = chrono::system_clock::now();
+    chrono::duration<double> elapsed_seconds = end-start;
+    cout << "starts computation at " << ctime(&start_time) << endl;
+    time_t end_time = chrono::system_clock::to_time_t(end);
+    cout << "finished computation at " << ctime(&end_time)
+              << "elapsed time: " << elapsed_seconds.count() << "s\n";
 
-    ofstream helperIndex("word.line.index");
-    for (auto &t: wordLineIndex){
-        helperIndex << t.first << " " << t.second << "\n";
-    }
 }
 
 void buildIndex_discarded(const string& textFile, const string& indexFile, unsigned int pageSize){
