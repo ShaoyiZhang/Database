@@ -13,6 +13,7 @@ Node::Node() {
   }
   for ( int i = 0; i < L; i++ ) {
     filePointers[i] = nullptr;
+    isDeleted[i] = nullptr;
   } 
   nKeys = 0;
   nChild = 0;
@@ -29,6 +30,7 @@ Node::Node( string word, FilePointer fp ) : isLeaf( false ), previous( nullptr )
   }
   for ( int i = 0; i < L; i++ ) {
     filePointers[i] = nullptr;
+    isDeleted[i] = nullptr;    
   }
   this->keys[0] = new string( word );
   nKeys = 1;
@@ -51,6 +53,7 @@ Node::Node( bool isLeaf,
   }
   for ( int i = 0; i < L; i++ ) {
     filePointers[i] = nullptr;
+    isDeleted[i] = nullptr;    
   } 
   cerr << "new empty\n";
   // this->keys[0] = new string( fp.getWord() );
@@ -71,10 +74,12 @@ Node::Node( string word, FilePointer fp, bool isLeaf,
   }
   for ( int i = 0; i < L; i++ ) {
     filePointers[i] = nullptr;
+    isDeleted[i] = nullptr;    
   } 
   cerr << "new leaf\n";
   this->keys[0] = new string( word );
   this->filePointers[0] = new FilePointer( fp ); // copy constructor
+  this->isDeleted[0] = new bool(false);
   nKeys = 1;
   nChild = 0; // leaf node
 }
@@ -194,7 +199,7 @@ void Node::insertChild( Node * child, string key ) {
 }
 
 // in leaf node, nKeys = nFPs, nChild = 0
-void Node::insertKeyValuePair( string word, FilePointer fp ) {
+void Node::insertKeyValIsDeleted( string word, FilePointer fp, bool isD ) {
   int index = this->indexOfKey( word );
   cerr << "inserKeyValue: size " << this->size() << " index " << index << endl;  
   if ( index == this->nKeys ) { // insert at the end
@@ -204,10 +209,13 @@ void Node::insertKeyValuePair( string word, FilePointer fp ) {
     for ( int i = this->size(); i > index; i-- ) {
       keys[i] = keys[i-1];
       filePointers[i] = filePointers[i-1];
+      isDeleted[i] = isDeleted[i-1];
     }
   }
   keys[index] = new string( word );
   filePointers[index] = new FilePointer( fp );
+  isDeleted[index] = new bool( false );
+  
   nKeys++;  
   // need to check final size in caller
 }

@@ -223,7 +223,7 @@ Node * BPlusTree::splitLeaf( Node * cur, int childIndex ) {
   cerr << "split leaf left bound " << leftBound << endl;
   for (int i = leftBound; i <= L; i++){
     // copy latterHalf(index 2,3) to new leaf
-    newLeaf->insertKeyValuePair( cur->getKeyAt( i ), *(cur->getFPAt( i ) ) );
+    newLeaf->insertKeyValIsDeleted( cur->getKeyAt( i ), *(cur->getFPAt( i ) ), cur->getIsDeletedAt( i ) );
     // remove from original node
     cur->decrKeySize();
   }
@@ -360,10 +360,10 @@ Node * BPlusTree::insert( string word, FilePointer record, Node * start ){
   if ( candidate->size() == 0 || candidate->size() == index ) {
     // just use push_back
     cerr << "append\n";
-    candidate->insertKeyValuePair( word, record );
+    candidate->insertKeyValIsDeleted( word, record, true );
   } else {
     // find the right location to insert
-    candidate->insertKeyValuePair( word, record );
+    candidate->insertKeyValIsDeleted( word, record, true );
     cerr << "!!! size " << candidate->size() << endl;
     for ( int i = 0; i < candidate->size(); i++ ) {
       cerr << candidate->getKeyAt(i) << " ";
@@ -548,6 +548,11 @@ vector<int> BPlusTree::searchMultiple( vector<string> wordList ) {
   }
   return intersect;
 }
+
+bool BPlusTree::remove( string word ) {
+  Node * parent = searchHelper( word );
+  
+}
 /*
 bool BPlusTree::remove( string word ) {
   // use insert helper to find the parent of leaf node
@@ -571,7 +576,7 @@ bool BPlusTree::remove( string word ) {
       if ( left->size() > L ) {
         // borrow from left if left leaf contain enough key-value pair    
         // copy entry to current node
-        leaf->insertKeyValuePair( left->getKeyAt( left->size() - 1 ), 
+        leaf->insertKeyValIsDeleted( left->getKeyAt( left->size() - 1 ), 
                                   left->getFPAt( left->size() - 1 ) );
         left->decrKeySize(); // delete entry from left node
         parent->setKeyAt( parent->indexOfKey( leaf->getKeyAt(0) ) );
@@ -581,7 +586,7 @@ bool BPlusTree::remove( string word ) {
   } else if ( right != nullptr ) { // left == nullptr, first leaf node in last level
       if ( right->size() > L ) {
         // borrow from right
-        leaf->insertKeyValuePair( right->getKeyAt( 0 ), 
+        leaf->insertKeyValIsDeleted( right->getKeyAt( 0 ), 
                                   right->getFPAt( 0 ) );
         right->decrKeySize(); // delete entry from left node
         parent->setKeyAt( parent->indexOfKey( right->getKeyAt(0) ) );
@@ -608,7 +613,7 @@ void merge( Node * cur, Node * sibling, Node * parent, bool isLeft ) {
   // then merge left sibling to current node 
   // 1. move key-val pairs to left sibling
   for ( int i = 0; i < leaf->size(); i++ ) {
-    sibling->insertKeyValuePair( leaf->getKeyAt( i ), left->getFPAt( i ) );
+    sibling->insertKeyValIsDeleted( leaf->getKeyAt( i ), left->getFPAt( i ) );
   }
   // 2. remove pointer for leaf node and shift other child pointers in parent node
   parent->removeChildAt( index ); 

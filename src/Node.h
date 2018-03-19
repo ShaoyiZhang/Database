@@ -19,7 +19,8 @@ class Node{
 private:
   string * keys[M];
   Node* children[M+1];
-  FilePointer * filePointers[L+1]; // only useful in leaf nodes  
+  FilePointer * filePointers[L+1]; // only useful in leaf nodes 
+  bool * isDeleted[L+1]; 
   int nKeys;
   int nChild;  
   bool isLeaf;
@@ -51,6 +52,7 @@ private:
   void incrChildSize() { this->nChild++; }
   void decrChildSize() { this->nChild--; }
 
+  bool getIsDeletedAt( int idx ) { return isDeleted[idx]; }
   bool getIsLeaf() { return isLeaf; }
   void setIsLeaf( bool isLeaf ){ isLeaf = isLeaf; }
   void insertLeaf( string name, int index, int endPos );
@@ -67,7 +69,7 @@ private:
   // void appendValue( FilePointer fp ) { this->filePointers[nKeys] = new FilePointer( fp );}
   
   // used in leaf node 
-  void insertKeyValuePair( string word, FilePointer fp );
+  void insertKeyValIsDeleted( string word, FilePointer fp, bool isD );
   void removeKeyValuePairAt( int index );
 
   // used in internal node
