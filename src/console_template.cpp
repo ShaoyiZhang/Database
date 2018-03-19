@@ -68,7 +68,7 @@ int main(int argc,char* argv[])
         }
         else if (thisLine.find("insert") != std::string::npos) { // > insert [document name]: Insert the word:document name pair into the index.
             std::string docFileName = thisLine.substr(thisLine.find("insert")+7);
-            insert(indexFile, docFileName);
+            insert(indexFile, 0);
             // assume that load takes the address of the new document and adds its contents into the index file
         }
         else if (thisLine.find("delete") != std::string::npos) { // delete [document name]: Removes a document with the given name from the index

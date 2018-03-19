@@ -119,9 +119,9 @@ void BPlusTree::insert( Node * parent, Node * child, string key ) {
   cerr << " parent child size before invoking splitRoot/non leaf "
        << parent->childSize() << " keySize: " << parent->size() << "\n";
   if ( parent->childSize() == M + 1 ){
-    // levelOrder(root);    
+    // levelOrder(root);
     cerr << "parent ALSO need to split\n";
-    if ( parent == root ){
+    if ( parent == root ) {
       splitRoot( parent );
     } else {
       splitNoneLeaf( parent );
@@ -130,9 +130,9 @@ void BPlusTree::insert( Node * parent, Node * child, string key ) {
   // return NULL;
 }
 
-void BPlusTree::insertEntry(string word){
-    FilePointer fp = FilePointer();
-    this->insert(word, fp);
+void BPlusTree::insertEntry( string word, int docNum ) {
+  FilePointer fp = FilePointer();
+  this->insert( word, fp, root );
 }
 
 void BPlusTree::splitRoot( Node * cur ) {
@@ -304,7 +304,7 @@ Node * BPlusTree::insertHelper( string word, Node * start ) {
   return cur;
 }
 
-Node * BPlusTree::insert( string word, FilePointer record, Node * start ){
+Node * BPlusTree::insert( string word, FilePointer record, Node * start ) {
   cerr << "inserting \"" << word << "\"\n";
   cerr << "tree before insert:\n";
   this->levelOrder( this->root );

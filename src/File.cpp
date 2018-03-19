@@ -1,10 +1,10 @@
 #include "File.h"
-// FilePointer::FilePointer() {
-//   filename = nullptr;
-//   pageID = -1;
-//   offset = -1;
-
-// }
+FilePointer::FilePointer() {
+  filename = nullptr;
+  pageID = -1;
+  offset = -1;
+  nDupKeys = 0;
+}
 // FilePointer::FilePointer( string filename, int offset, int nDupKeys ) {
 //   this->filename = filename;
 //   this->offset = offset;
