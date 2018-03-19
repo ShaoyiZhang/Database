@@ -611,9 +611,9 @@ int main() {
     int minimum_number = 0;
 
     fprintf(in, "%d\n", 50000);
-    totalWords = 10000;
-    num_ways = 10;
-    run_size = 1000;
+//    totalWords = 10000;
+//    num_ways = 10;
+//    run_size = 1000;
 
     static const char * alphanum[] = {
             "1\t2\t3\n",
