@@ -42,6 +42,7 @@ public:
 
   bool operator == ( FilePointer const &other );
   vector<int> getDocList();
+  void appendDocList( vector<int> newDocList );
   friend ostream& operator <<( ostream& out, const FilePointer& fp );
   // friend ostream& operator<<(ostream& out, const Vector2D& vec) // output
   bool fetchFromDisk();

@@ -307,7 +307,7 @@ Node * BPlusTree::insertHelper( string word, Node * start ) {
   return cur;
 }
 
-Node * BPlusTree::insert( string word, FilePointer record, Node * start ) {
+Node * BPlusTree::insert( string word, FilePointer & record, Node * start ) {
   cerr << "inserting \"" << word << "\"\n";
   cerr << "tree before insert:\n";
   this->levelOrder( this->root );
@@ -341,13 +341,21 @@ Node * BPlusTree::insert( string word, FilePointer record, Node * start ) {
 
 // the key is already in the tree/index file
 // update the tree in memory and modify the index file on disk
-Node * BPlusTree::insertExisting( string word, FilePointer record, Node * leaf ) {
-  // int index = leaf->indexOfKey( );
-  return nullptr;
+Node * BPlusTree::insertExisting( string word, FilePointer & record, Node * leaf ) {
+  int index = leaf->indexOfFilePointer( word );
+  leaf->getFPAt( index )->appendDocList( record.getDocList() );
+  return leaf;
+  // while ( index < leaf->size() ) {
+  //   if ( leaf->getKeyAt( index ) == word ) {
+  //     break;
+  //   }
+  //   index++;
+  // }
+  
 }
 
 // candidate = deepest internal node
-Node * BPlusTree::insertNew( string word, FilePointer record, Node * candidate ) {
+Node * BPlusTree::insertNew( string word, FilePointer & record, Node * candidate ) {
   // cerr << "tree after insert helper:\n";
   // this->levelOrder( this->root );
   this->levelOrder( candidate );
@@ -523,8 +531,9 @@ void BPlusTree::bulkLoad() {
   // it++;
   for ( auto it = dirPage.begin(); it != dirPage.end(); ++it ) {
     // get the parent( internal node ) of right most leaf
+    FilePointer record = FilePointer( it->first, it->second, it->first, 0 );
     right = this->insert( it->first, 
-                          FilePointer( it->first, it->second, it->first, 0 ),
+                          record,
                           right 
                         )->getParent();    
   }

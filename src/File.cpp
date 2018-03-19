@@ -57,3 +57,12 @@ vector<int> FilePointer::getDocList() {
 bool FilePointer::fetchFromDisk() {
   return true;
 }
+
+void FilePointer::appendDocList( vector<int> newDocList ) {
+  if ( isBuffered == true ) {
+    this->docList.insert(end(docList), begin(newDocList), end(newDocList));
+  } else {
+    // insertDisk
+    return;
+  }
+}

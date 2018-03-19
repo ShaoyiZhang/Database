@@ -39,13 +39,13 @@ public:
   
   // return pointer to leaf node
   void insert( string word, FilePointer record );
-  Node * insert( string word, FilePointer record, Node * start );
+  Node * insert( string word, FilePointer & record, Node * start );
   void insert( Node * parent, Node * child, string key );
   bool remove( string word );
   Node * insertHelper( string word, Node * start ); // find internal node candidate
   void insertEntry(string word, int docNum );
-  Node * insertNew( string word, FilePointer record, Node * canmdidate );
-  Node * insertExisting( string word, FilePointer record, Node * leaf );
+  Node * insertNew( string word, FilePointer & record, Node * canmdidate );
+  Node * insertExisting( string word, FilePointer & record, Node * leaf );
 
   void splitNoneLeaf( Node * cur );
   // return leaf containing right half
