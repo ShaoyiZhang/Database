@@ -5,21 +5,17 @@
 #ifndef DATABASE_EMS_H
 #define DATABASE_EMS_H
 
-int MAX = 65536;
-int MAX_BUFFER = 8096;
+static int MAX = 65536;
+static int MAX_BUFFER = 8096;
 
 //char metadata[100];
-int numRows;
+static int numRows;
 
 #include <cstdlib>
 #include <string>
 #include <vector>
 
 using namespace std;
-
-class EMS {
-
-};
 
 struct IndexRecord{
     string word;
@@ -30,7 +26,7 @@ struct IndexRecord{
 
 void pR (struct IndexRecord ir);
 void gen_random(char *s, const int len);
-void mergeTwoFiles(char *input_1, char *input_2, char *output_file);
+void mergeTwoFiles(const char *input_1, const char *input_2, const char *output_file);
 void setBufferSize(int size);
 
 #endif //DATABASE_EMS_H

@@ -2,7 +2,6 @@
 // Created by Zhancheng Qian on 2018/3/10.
 //
 
-#include "EMS.h"
 //#include "Sort.h"
 
 // C++ program to implement external sorting using
@@ -16,7 +15,13 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
+#include "EMS.h"
+
 using namespace std;
+
+extern int MAX;
+extern int MAX_BUFFER;
+extern int numRows;
 
 struct MinHeapNode {
     // The element to be stored
@@ -564,67 +569,67 @@ void sortDocIds(char *index_file, char *input_file, char *output_file){
 
 
 // Driver program to test above
-int main() {
-    int totalWords; //50000
-    int B = MAX_BUFFER; //20
-
-    char input_1[] = "head.txt";
-    char input_2[] = "tail.txt";
-    char output_1[] = "head_1.txt";
-    char output_2[] = "tail_1.txt";
-
-    ifstream tf, tf2;
-    tf.open(input_1);
-    tf2.open(input_2);
-    FILE *out1 = openFile(output_1, "w");
-    FILE *out2 = openFile(output_2, "w");
-
-    static const char * alphanum[] = {
-            "1\t2\t3\n",
-            "1\t2\t3\t4\t5\n",
-            "1\t2\t3\t4\t5\t6\t7\n"};
-
-    // generate input
-    string l;
-    for (int i = 0; i < 1000; i++) {
-        getline(tf, l);
-//        printf("i: %d\n", i);
-//        printf("l: %s\n", l.c_str());
-//        char tmp[10]; gen_random(tmp, 10);
-        fprintf(out1, "%s\t", l.c_str());
-        fprintf(out1, "%s", alphanum[0]);
-    }
-    for (int i = 0; i < 1000; i++) {
-        getline(tf2, l);
-//        printf("i: %d\n", i);
-//        printf("l: %s\n", l.c_str());
-//        char tmp[10]; gen_random(tmp, 10);
-        fprintf(out2, "%s\t", l.c_str());
-        fprintf(out2, "%s", alphanum[0]);
-    }
-//    for (int i = 0; i < totalWords/2; i++) {
-//        char tmp[10]; gen_random(tmp, 10);
-//        fprintf(in, "%s\t", tmp);
-//        fprintf(in, "%s", alphanum[rand() % 3]);
-//        fprintf(in, "%s\t", tmp);
-//        fprintf(in, "%s", alphanum[rand() % 3]);
+//int main() {
+//    int totalWords; //50000
+//    int B = MAX_BUFFER; //20
+//
+//    char input_1[] = "head.txt";
+//    char input_2[] = "tail.txt";
+//    char output_1[] = "head_1.txt";
+//    char output_2[] = "tail_1.txt";
+//
+//    ifstream tf, tf2;
+//    tf.open(input_1);
+//    tf2.open(input_2);
+//    FILE *out1 = openFile(output_1, "w");
+//    FILE *out2 = openFile(output_2, "w");
+//
+//    static const char * alphanum[] = {
+//            "1\t2\t3\n",
+//            "1\t2\t3\t4\t5\n",
+//            "1\t2\t3\t4\t5\t6\t7\n"};
+//
+//    // generate input
+//    string l;
+//    for (int i = 0; i < 1000; i++) {
+//        getline(tf, l);
+////        printf("i: %d\n", i);
+////        printf("l: %s\n", l.c_str());
+////        char tmp[10]; gen_random(tmp, 10);
+//        fprintf(out1, "%s\t", l.c_str());
+//        fprintf(out1, "%s", alphanum[0]);
 //    }
-
-    fclose(out1);
-    fclose(out2);
-    tf.close();
-    tf2.close();
-
-    mergeTwoFiles(output_1, output_2, "output.txt");
-
-    return 0;
-}
+//    for (int i = 0; i < 1000; i++) {
+//        getline(tf2, l);
+////        printf("i: %d\n", i);
+////        printf("l: %s\n", l.c_str());
+////        char tmp[10]; gen_random(tmp, 10);
+//        fprintf(out2, "%s\t", l.c_str());
+//        fprintf(out2, "%s", alphanum[0]);
+//    }
+////    for (int i = 0; i < totalWords/2; i++) {
+////        char tmp[10]; gen_random(tmp, 10);
+////        fprintf(in, "%s\t", tmp);
+////        fprintf(in, "%s", alphanum[rand() % 3]);
+////        fprintf(in, "%s\t", tmp);
+////        fprintf(in, "%s", alphanum[rand() % 3]);
+////    }
+//
+//    fclose(out1);
+//    fclose(out2);
+//    tf.close();
+//    tf2.close();
+//
+//    mergeTwoFiles(output_1, output_2, "output.txt");
+//
+//    return 0;
+//}
 
 void setBufferSize(int size){
     MAX_BUFFER = size;
 }
 
-void mergeTwoFiles(char *input_1, char *input_2, char *output_file) {
+void mergeTwoFiles(const char *input_1, const char *input_2, const char *output_file) {
     int totalWords; //50000
     int B = MAX_BUFFER; //20
 
@@ -667,7 +672,7 @@ void mergeTwoFiles(char *input_1, char *input_2, char *output_file) {
     in1.close();
     in2.close();
 
-    externalSort(input_file, output_file, num_ways, run_size);
+    externalSort(input_file, const_cast<char *>(output_file), num_ways, run_size);
 
 }
 

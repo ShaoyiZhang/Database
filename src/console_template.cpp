@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "EMS.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -7,6 +8,10 @@
 #include <vector>
 // #include "?.h" // ?.h
 using namespace std;
+
+extern int MAX;
+extern int MAX_BUFFER;
+extern int numRows;
 
 void splitStrToVec_whitespace(std::vector<std::string> &v, const string& str) {
     istringstream iss(str);
@@ -58,7 +63,7 @@ int main(int argc,char* argv[])
         }
         else if (thisLine.find("merge") != std::string::npos) { // > merge [index file]: Merge the current index file with the second index file, and update the index file on the disk.
             string indexFile_merge = thisLine.substr(thisLine.find("merge")+6);
-            merge(indexFile, indexFile_merge);
+            mergeTwoFiles(indexFile.c_str(), indexFile_merge.c_str(), indexFile.c_str());
             // merge(string&, string&) adds content of the second index file to the first index file
         }
         else if (thisLine.find("insert") != std::string::npos) { // > insert [document name]: Insert the word:document name pair into the index.
