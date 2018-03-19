@@ -57,29 +57,29 @@ public:
     // to replace root with new node x and heapify()
     // new root
     void replaceMin(MinHeapNode x) {
-//        if (strcmp(x.element.word.c_str(), "") == 0)
-//            printf("replace with: MAX\n");
-//                else
-//            printf("replace with: %s\n", x.element.word.c_str());
-////        printf("this MinHeapNode x's size: %d\n", x.element.vec.size());
+        if (strcmp(x.element.word.c_str(), "") == 0)
+            printf("replace with: MAX\n");
+        else
+            printf("replace with: %s\n", x.element.word.c_str());
+//        printf("this MinHeapNode x's size: %d\n", x.element.vec.size());
         harr[0] = x;
-////        printf("this harrp[0]'s size: %d\n", harr[0].element.vec.size());
+//        printf("this harrp[0]'s size: %d\n", harr[0].element.vec.size());
         MinHeapify(0);
-//        printf("after replaceMin: \n");
+        printf("after replaceMin: \n");
         this->print();
     }
 
     void print(){
-//        printf("\n-------------------------------------------\n");
-//        printf("printing min heap: \n");
+        printf("\n-------------------------------------------\n");
+        printf("printing min heap: \n");
         for (int i =0; i<heap_size; i++ ){
-//            if (strcmp (harr[i].element.word.c_str(), "") != 0)
-//                printf("%s ", harr[i].element.word.c_str());
-//                    else
-//                printf("MAX ");
+            if (strcmp (harr[i].element.word.c_str(), "") != 0)
+                printf("%s ", harr[i].element.word.c_str());
+            else
+                printf("MAX ");
         }
-//        printf("\n");
-//        printf("-------------------------------------------\n\n");
+        printf("\n");
+        printf("-------------------------------------------\n\n");
     }
 
     void insertKey(MinHeapNode k);
@@ -93,9 +93,9 @@ MinHeap::MinHeap(MinHeapNode a[], int size) {
 
     for (int j=0; j<size; j++) {
         insertKey(a[j]);
-////        printf("\nheap after inserting: %d\n", a[j].element.hash);
+//        printf("\nheap after inserting: %d\n", a[j].element.hash);
         this->print();
-////        printf("\n");
+//        printf("\n");
     }
 
 //    this->print();
@@ -103,14 +103,14 @@ MinHeap::MinHeap(MinHeapNode a[], int size) {
 
 void MinHeap::insertKey(MinHeapNode k)
 {
-//    if (strcmp(k.element.word.c_str(), "") == 0)
-//        printf("inserting: MAX\n");
-//            else
-//        printf("inserting: %s\n", k.element.word.c_str());
+    if (strcmp(k.element.word.c_str(), "") == 0)
+        printf("inserting: MAX\n");
+    else
+        printf("inserting: %s\n", k.element.word.c_str());
 
     if (heap_size == capacity)
     {
-//        printf("\nOverflow: Could not insertKey\n");
+        printf("\nOverflow: Could not insertKey\n");
         return;
     }
 
@@ -122,21 +122,21 @@ void MinHeap::insertKey(MinHeapNode k)
     // Fix the min heap property if it is violated
 //    while (i != 0 && (harr[parent(i)].element.word > harr[i].element.word))
 //    {
-////        printf("this needs to be swapped...........i: %d, \n", i);
-////        printf("because I think %s is bigger than %s, \n", harr[parent(i)].element.word.c_str(), harr[i].element.word.c_str());
+//        printf("this needs to be swapped...........i: %d, \n", i);
+//        printf("because I think %s is bigger than %s, \n", harr[parent(i)].element.word.c_str(), harr[i].element.word.c_str());
 //        swap(&harr[i], &harr[parent(i)]);
 //        i = parent(i);
 //    }
     while (i != 0)
     {   if (harr[parent(i)].element.word > harr[i].element.word) {
-//            printf("FIRST this needs to be swapped...........i: %d, \n", i);
-//            printf("because I think i: %s is bigger than %s, \n", harr[i].element.word.c_str(), harr[parent(i)].element.word.c_str());
+            printf("FIRST this needs to be swapped...........i: %d, \n", i);
+            printf("because I think i: %s is bigger than %s, \n", harr[i].element.word.c_str(), harr[parent(i)].element.word.c_str());
             swap(&harr[i], &harr[parent(i)]);
             i = parent(i);
         }
         else if (harr[left(parent(i))].element.word > harr[i].element.word && left(parent(i)) != i){
-//            printf("SECOND this needs to be swapped...........i: %d, \n", i);
-//            printf("because I think i: %s is bigger than %s, \n", harr[i].element.word.c_str(), harr[left(parent(i))].element.word.c_str());
+            printf("SECOND this needs to be swapped...........i: %d, \n", i);
+            printf("because I think i: %s is bigger than %s, \n", harr[i].element.word.c_str(), harr[left(parent(i))].element.word.c_str());
             swap(&harr[i], &harr[left(parent(i))]);
             i = left(parent(i));
         }
@@ -153,51 +153,51 @@ void MinHeap::MinHeapify(int i) {
     int l = left(i);
     int r = right(i);
 
-//    printf("+++++++++++\n");
+    printf("+++++++++++\n");
     if (i < heap_size) {
-//        if (strcmp(harr[i].element.word.c_str(), "") != 0)
-//            printf("i: %s\n", harr[i].element.word.c_str());
-//                else
-//            printf("i: MAX\n");
+        if (strcmp(harr[i].element.word.c_str(), "") != 0)
+            printf("i: %s\n", harr[i].element.word.c_str());
+        else
+            printf("i: MAX\n");
     }
     if (l < heap_size) {
-//        if (strcmp(harr[l].element.word.c_str(), "") != 0)
-//            printf("l: %s\n", harr[l].element.word.c_str());
-//                else
-//            printf("l: MAX\n");
+        if (strcmp(harr[l].element.word.c_str(), "") != 0)
+            printf("l: %s\n", harr[l].element.word.c_str());
+        else
+            printf("l: MAX\n");
     }
     if (r < heap_size) {
-//        if (strcmp(harr[r].element.word.c_str(), "") != 0)
-//            printf("r: %s\n", harr[r].element.word.c_str());
-//                else
-//            printf("r: MAX\n");
+        if (strcmp(harr[r].element.word.c_str(), "") != 0)
+            printf("r: %s\n", harr[r].element.word.c_str());
+        else
+            printf("r: MAX\n");
     }
-//    printf("+++++++++++\n");
+    printf("+++++++++++\n");
 
 
     int smallest = i;
     int flag1 = 0, flag2 = 0;
     if (l < heap_size) {
         if (strcmp (harr[i].element.word.c_str(), "") == 0) {
-//            printf("1st condition\n");
+            printf("1st condition\n");
             smallest = l;
             flag1 = 1;
         }
         if (strcmp (harr[l].element.word.c_str(), "") != 0
             && harr[l].element.word < harr[i].element.word && flag1 == 0) {
-//            printf("2nd condition\n");
+            printf("2nd condition\n");
             smallest = l;
         }
     }
     if (r < heap_size) {
         if (strcmp (harr[smallest].element.word.c_str(), "")  == 0) {
-//            printf("3rd condition\n");
+            printf("3rd condition\n");
             smallest = r;
             flag2 = 1;
         }
         if(strcmp (harr[r].element.word.c_str(), "") != 0
-           && harr[r].element.word < harr[smallest].element.word && flag2 == 0) {
-//            printf("4th condition\n");
+            && harr[r].element.word < harr[smallest].element.word && flag2 == 0) {
+            printf("4th condition\n");
             smallest = r;
         }
     }
@@ -206,7 +206,7 @@ void MinHeap::MinHeapify(int i) {
         && strcmp (harr[i].element.word.c_str(), "") != 0
         && strcmp (harr[l].element.word.c_str(), "") == 0
         && strcmp (harr[r].element.word.c_str(), "")  == 0) {
-//        printf("5th condition\n");
+        printf("5th condition\n");
         smallest = i;
     }
 
@@ -214,7 +214,7 @@ void MinHeap::MinHeapify(int i) {
         && strcmp (harr[i].element.word.c_str(), "") == 0
         && strcmp (harr[l].element.word.c_str(), "") != 0
         && strcmp (harr[r].element.word.c_str(), "")  == 0) {
-//        printf("6th condition\n");
+        printf("6th condition\n");
         smallest = l;
     }
 
@@ -222,33 +222,33 @@ void MinHeap::MinHeapify(int i) {
         && strcmp (harr[i].element.word.c_str(), "") == 0
         && strcmp (harr[l].element.word.c_str(), "") == 0
         && strcmp (harr[r].element.word.c_str(), "")  != 0) {
-//        printf("7th condition\n");
+        printf("7th condition\n");
         smallest = r;
     }
 
     if (l < heap_size && r >= heap_size
         && strcmp (harr[i].element.word.c_str(), "") != 0
         && strcmp (harr[l].element.word.c_str(), "") == 0) {
-//        printf("9th condition\n");
+        printf("9th condition\n");
         smallest = i;
     }
     if (l < heap_size && r >= heap_size
         && strcmp (harr[i].element.word.c_str(), "") == 0
         && strcmp (harr[l].element.word.c_str(), "") != 0) {
-//        printf("10th condition\n");
+        printf("10th condition\n");
         smallest = l;
     }
 
     if (l >= heap_size && r < heap_size
         && strcmp (harr[i].element.word.c_str(), "") != 0
         && strcmp (harr[r].element.word.c_str(), "") == 0) {
-//        printf("11th condition\n");
+        printf("11th condition\n");
         smallest = i;
     }
     if (l >= heap_size && r < heap_size
         && strcmp (harr[i].element.word.c_str(), "") == 0
         && strcmp (harr[r].element.word.c_str(), "") != 0) {
-//        printf("12th condition\n");
+        printf("12th condition\n");
         smallest = r;
     }
 
@@ -270,14 +270,14 @@ void swap(MinHeapNode *x, MinHeapNode *y) {
         b = "MAX";
     else
         b = y->element.word.c_str();
-//    printf("swapping %s and %s\n", a.c_str(), b.c_str());
+    printf("swapping %s and %s\n", a.c_str(), b.c_str());
     MinHeapNode temp = *x;
-////    printf("temp is good\n");
+//    printf("temp is good\n");
     *x = *y;
-////    printf("x=y is good\n");
+//    printf("x=y is good\n");
     *y = temp;
-////    printf("y=x is good\n");
-////    printf("swap is good\n");
+//    printf("y=x is good\n");
+//    printf("swap is good\n");
 }
 
 // Merges two subarrays of arr[].
@@ -357,10 +357,10 @@ void mergeFiles(char *output_file, int n, int k) {
         // Open output files in read mode.
         in[i].open(fileName);
     }
-//    printf("arrive 1\n");
+    printf("arrive 1\n");
     // FINAL OUTPUT FILE
     FILE *out = openFile(output_file, "w");
-//    printf("arrive 2\n");
+    printf("arrive 2\n");
     // Create a min heap with k heap nodes.  Every heap node
     // has first element of scratch output file
     MinHeapNode *harr = new MinHeapNode[k];
@@ -368,19 +368,19 @@ void mergeFiles(char *output_file, int n, int k) {
     for (i = 0; i < k; i++) {
         // break if no output file is empty and
         // index i will be no. of input files
-//        printf("this is: %d\n", i);
+        printf("this is: %d\n", i);
         string line;
         if (!getline(in[i], line))
         {
             break;
         }
-//        printf("the line is %s\n", line.c_str());
+        printf("the line is %s\n", line.c_str());
         vector<string> tokens;
         vector<unsigned long> tmp_vec;
         boost::split(tokens, line, boost::is_any_of("\t"));
         harr[i].element.word = tokens[0];
         for (int w = 1; w < tokens.size(); w++){
-//            printf("%s\n", tokens[w].c_str());
+            printf("%s\n", tokens[w].c_str());
             tmp_vec.push_back(stol(tokens[w]));
         }
         harr[i].element.vec = tmp_vec;
@@ -404,7 +404,7 @@ void mergeFiles(char *output_file, int n, int k) {
     while (count != i) {
         // Get the minimum element and store it in output file
         MinHeapNode root = hp.getMin();
-////        printf("root has size: %d\n", root.element.vec.size());
+//        printf("root has size: %d\n", root.element.vec.size());
         string s = root.element.word + "\t";
         std::vector<unsigned long>::iterator it;
         int a = 0;
@@ -419,12 +419,12 @@ void mergeFiles(char *output_file, int n, int k) {
 
 //        fprintf(out, "%d\t%d\t%d\t%s\n", root.element.hash, root.element.prev,
 //                root.element.next, root.element.filePointer.c_str());
-//        printf("getting out: ");
-//        if (strcmp (root.element.word.c_str(), "") == 0)
-//            printf("ROOT EMPTY !!!!!!!!!!!!!!!!!!!!!\n");
-//                else
-//            printf("%s\n", root.element.word.c_str());
-////        printf("outputting: %d\n", rowNum++);
+        printf("getting out: ");
+        if (strcmp (root.element.word.c_str(), "") == 0)
+            printf("ROOT EMPTY !!!!!!!!!!!!!!!!!!!!!\n");
+        else
+            printf("%s\n", root.element.word.c_str());
+//        printf("outputting: %d\n", rowNum++);
         // Find the next element that will replace current
         // root of heap. The next element belongs to same
         // input file as the current min element.
@@ -434,11 +434,11 @@ void mergeFiles(char *output_file, int n, int k) {
             vector<unsigned long> vec; vec.push_back(0);
             struct IndexRecord ir = {"", vec};
             root.element = ir;
-//            printf("count is done!!!\n");
+            printf("count is done!!!\n");
             count++;
             flag = 1;
         }
-////        printf("so now I am reading: %s\n", line.c_str());
+//        printf("so now I am reading: %s\n", line.c_str());
         if (flag == 0){
             vector<string> tokens;
             vector<unsigned long> tmp_vec;
@@ -448,11 +448,11 @@ void mergeFiles(char *output_file, int n, int k) {
                 tmp_vec.push_back(stol(tokens[w]));
             root.element.vec = tmp_vec;
 //            stats[root.i]++;
-//            printf("size: %d\n", tokens.size());
+            printf("size: %d\n", tokens.size());
             rowNum++;
         }
 
-////        printf("replace with: \n");
+//        printf("replace with: \n");
 //        pR(root.element);
         // Replace root with next element of input file
         hp.replaceMin(root);
@@ -492,16 +492,21 @@ void createInitialRuns(char *input_file, int run_size,
 
     // read first row metadata
     string line;
+    if (!getline(in, line))
+    {
+        printf("Metadata missing\n");
+        exit(1);
+    }
 
     int i;
     while (more_input) {
         // write run_size elements into arr from input file
         for (i = 0; i < run_size; i++)
         {
-//            printf("i is: %d\n", i);
+            printf("i is: %d\n", i);
             if (!getline(in, line))
             {
-//                printf("break\n");
+                printf("break\n");
                 more_input = false;
                 break;
             }
@@ -520,7 +525,7 @@ void createInitialRuns(char *input_file, int run_size,
         // can't assume that the loop runs to run_size
         // since the last run's length may be less than run_size
         for (int j = 0; j < i; j++) {
-//            printf("j is: %d\n", j);
+            printf("j is: %d\n", j);
             string s = arr[j].word + "\t";
             std::vector<unsigned long>::iterator it;
             int k = 0;
@@ -532,7 +537,7 @@ void createInitialRuns(char *input_file, int run_size,
                 k++;
             }
             fprintf(out[next_output_file], "%s", s.c_str());
-////            printf("cstr: %s\n", arr[j].filePointer.c_str());
+//            printf("cstr: %s\n", arr[j].filePointer.c_str());
         }
 
         next_output_file++;
@@ -551,11 +556,11 @@ void externalSort(char *input_file, char *output_file, int num_ways, int run_siz
     // read the input file, create the initial runs,
     // and assign the runs to the scratch output files
     createInitialRuns(input_file, run_size, num_ways);
-//    printf("here1111\n");
+    printf("here1111\n");
 
     // Merge the runs using the K-way merging
     mergeFiles(output_file, run_size, num_ways);
-//    printf("here2222\n");
+    printf("here2222\n");
 }
 
 void sortDocIds(char *index_file, char *input_file, char *output_file){
@@ -568,85 +573,18 @@ int main() {
     int totalWords; //50000
     int B = MAX_BUFFER; //20
 
-    char input_1[] = "head.txt";
-    char input_2[] = "tail.txt";
-    char output_1[] = "head_1.txt";
-    char output_2[] = "tail_1.txt";
-
-    ifstream tf, tf2;
-    tf.open(input_1);
-    tf2.open(input_2);
-    FILE *out1 = openFile(output_1, "w");
-    FILE *out2 = openFile(output_2, "w");
-
-    static const char * alphanum[] = {
-            "1\t2\t3\n",
-            "1\t2\t3\t4\t5\n",
-            "1\t2\t3\t4\t5\t6\t7\n"};
-
-    // generate input
-    string l;
-    for (int i = 0; i < 1000; i++) {
-        getline(tf, l);
-//        printf("i: %d\n", i);
-//        printf("l: %s\n", l.c_str());
-//        char tmp[10]; gen_random(tmp, 10);
-        fprintf(out1, "%s\t", l.c_str());
-        fprintf(out1, "%s", alphanum[0]);
-    }
-    for (int i = 0; i < 1000; i++) {
-        getline(tf2, l);
-//        printf("i: %d\n", i);
-//        printf("l: %s\n", l.c_str());
-//        char tmp[10]; gen_random(tmp, 10);
-        fprintf(out2, "%s\t", l.c_str());
-        fprintf(out2, "%s", alphanum[0]);
-    }
-//    for (int i = 0; i < totalWords/2; i++) {
-//        char tmp[10]; gen_random(tmp, 10);
-//        fprintf(in, "%s\t", tmp);
-//        fprintf(in, "%s", alphanum[rand() % 3]);
-//        fprintf(in, "%s\t", tmp);
-//        fprintf(in, "%s", alphanum[rand() % 3]);
-//    }
-
-    fclose(out1);
-    fclose(out2);
-    tf.close();
-    tf2.close();
-
-    mergeTwoFiles(output_1, output_2, "output.txt");
-
-    return 0;
-}
-
-void setBufferSize(int size){
-    MAX_BUFFER = size;
-}
-
-void mergeTwoFiles(char *input_1, char *input_2, char *output_file) {
-    int totalWords; //50000
-    int B = MAX_BUFFER; //20
-
     char input_file[] = "input.txt";
+    char output_file[] = "output.txt";
 
-    FILE *in = openFile(input_file, "w");
+    FILE *in = openFile(input_file, "r");
+//    if (fscanf(in, "%d\n", &numRows) != 1)
+//    {
+//        printf("Metadata missing\n");
+//        exit(1);
+//    }
+//    fclose(in);
 
-    ifstream in1, in2;
-    in1.open(input_1);
-    in2.open(input_2);
-    string row;
-    int count = 0;
-    while(getline(in1, row)){
-        fprintf(in, "%s\n", row.c_str());
-        count ++;
-    }
-    while(getline(in2, row)){
-        fprintf(in, "%s\n", row.c_str());
-        count ++;
-    }
-
-    totalWords = count;
+    totalWords = numRows;
 
     // No. of Partitions of input file.
     int num_ways;
@@ -663,12 +601,49 @@ void mergeTwoFiles(char *input_1, char *input_2, char *output_file) {
         run_size = B;
     }
 
+    in = openFile(input_file, "w");
+    ifstream tf;
+    tf.open("google-10000-english-no-swears.txt");
+
+    srand(time(NULL));
+
+    int max_number = 65536;
+    int minimum_number = 0;
+
+    fprintf(in, "%d\n", 50000);
+    totalWords = 10000;
+    num_ways = 10;
+    run_size = 1000;
+
+    static const char * alphanum[] = {
+            "1\t2\t3\n",
+                    "1\t2\t3\t4\t5\n",
+                    "1\t2\t3\t4\t5\t6\t7\n"};
+
+    // generate input
+    string l;
+    for (int i = 0; i < totalWords/2; i++) {
+        getline(tf, l);
+        printf("i: %d\n", i);
+        printf("l: %s\n", l.c_str());
+//        char tmp[10]; gen_random(tmp, 10);
+        fprintf(in, "%s\t", l.c_str());
+        fprintf(in, "%s", alphanum[0]);
+    }
+//    for (int i = 0; i < totalWords/2; i++) {
+//        char tmp[10]; gen_random(tmp, 10);
+//        fprintf(in, "%s\t", tmp);
+//        fprintf(in, "%s", alphanum[rand() % 3]);
+//        fprintf(in, "%s\t", tmp);
+//        fprintf(in, "%s", alphanum[rand() % 3]);
+//    }
+
     fclose(in);
-    in1.close();
-    in2.close();
+    tf.close();
 
-    externalSort(input_file, output_file, num_ways, run_size);
+    externalSort(input_file, "output.txt", num_ways, run_size);
 
+    return 0;
 }
 
 void gen_random(char *s, const int len) {
@@ -684,18 +659,18 @@ void gen_random(char *s, const int len) {
     s[len] = 0;
 }
 //void pR (struct IndexRecord ir){
-////    printf("\n");
-////    printf("{\n");
-////    printf("hash: %d, pr: %d, nx: %d, fp: %s\n", ir.hash, ir.prev, ir.next, ir.filePointer.c_str());
-////    printf("}\n");
-////    printf("\n");
+//    printf("\n");
+//    printf("{\n");
+//    printf("hash: %d, pr: %d, nx: %d, fp: %s\n", ir.hash, ir.prev, ir.next, ir.filePointer.c_str());
+//    printf("}\n");
+//    printf("\n");
 //}
 //
 //void pN (struct MinHeapNode mh){
-////    printf("\n");
-////    printf("{\n");
-////    printf("mh i: %d\n", mh.i);
-////    printf("hash: %d, pr: %d, nx: %d, fp: %s\n", mh.element.hash, mh.element.prev, mh.element.next, mh.element.filePointer.c_str());
-////    printf("}\n");
-////    printf("\n");
+//    printf("\n");
+//    printf("{\n");
+//    printf("mh i: %d\n", mh.i);
+//    printf("hash: %d, pr: %d, nx: %d, fp: %s\n", mh.element.hash, mh.element.prev, mh.element.next, mh.element.filePointer.c_str());
+//    printf("}\n");
+//    printf("\n");
 //}

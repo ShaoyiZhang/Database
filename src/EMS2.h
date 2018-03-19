@@ -30,7 +30,5 @@ struct IndexRecord{
 
 void pR (struct IndexRecord ir);
 void gen_random(char *s, const int len);
-void mergeTwoFiles(char *input_1, char *input_2, char *output_file);
-void setBufferSize(int size);
 
 #endif //DATABASE_EMS_H

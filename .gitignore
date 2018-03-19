@@ -40,3 +40,11 @@ yelp_final_dataset
 *.exe
 *.out
 *.app
+
+
+src/indexFileGenerator/index1000
+src/indexFileGenerator/index100000
+src/indexFileGenerator/index500000
+src/indexFileGenerator/text
+src/indexFileGenerator/word.line.index
+src/test01
