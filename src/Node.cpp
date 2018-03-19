@@ -106,20 +106,62 @@ void Node::insertKey( string word ) {
     for ( int i = this->size(); i > index; i-- ) {
       keys[i] = keys[i-1];
       // also need to move pointers
-      children[i+1] = children[i];
+      // children[i+1] = children[i];
     }
     keys[index] = new string( word );
   }
   nKeys++;  
 }
 
-void Node::insertChild( Node * child ) {
-  int index = this->indexOfChild( child->getKeyAt(0) ); 
-  cerr << "insert Child: size " << this->nChild << " index " << index << endl;  
-  nChild++;    
-  if ( index == this->nChild - 1 ) { // insert at the end
-    cerr << "insert at end\n";
-    children[index] = child;
+void Node::insertChild( Node * child, string key ) {
+  cerr << "start of insert child\n";
+  cerr << "nchild " << nChild << endl;
+  // for ( int j = 0; j < nChild; j++ ) {
+  //   if ( this->getChildAt(j) != nullptr ) {
+  //     cerr << this->getChildAt(j)->getFPAt(0)->getWord() << " ";
+  //   }
+  // }
+  cerr << endl;
+  int childIndex = this->indexOfChild( key );
+  cerr << "insert Child: size " << this->nChild << " child index " << childIndex << endl;  
+  // cerr << "middle of insert child\n";
+  // for ( int j = 0; j < nChild; j++ ) {
+  //   if ( this->getChildAt(j) != nullptr ) {
+  //     cerr << this->getChildAt(j)->getFPAt(0)->getWord() << " ";
+  //   }
+  // }
+  // cerr << endl;
+  // if key does Not exist OR left most child was splited
+  // we need to insert key first ( either at begin or at end )
+  if ( this->children[childIndex] != nullptr || childIndex == nChild - 1 || childIndex == 0 ) {
+    cerr << " insert key before insert child\n";
+    this->insertKey( key );
+    // recompute index since key has changed
+    childIndex = this->indexOfChild( key );
+    cerr << " child index of " << key << " : " << childIndex << endl;
+    // cerr << "printing index:\n";
+    // for ( int i = 0; i < size(); i++ ) {
+    //   cerr << " " << getKeyAt(i) << " ";
+    // } 
+  }
+
+  cerr << "nkeys " << nKeys << endl;
+  // for ( int i = 0; i < nKeys; i++ ) {
+  //   cerr << " " << this->getKeyAt(i) << " ";
+  // } 
+  cerr << endl;
+
+  // early increment 
+  nChild++;
+  // cerr << "\n after incr nChild\n";
+  // for ( int j = 0; j < nChild; j++ ) {
+  //   if ( this->getChildAt(j) != nullptr ) {
+  //     cerr << this->getChildAt(j)->getKeyAt(0) << " ";
+  //   }
+  // }
+  if ( childIndex == nChild - 1 ) { // insert at the end
+    cerr << "insert child at end\n";
+    children[childIndex] = child;
     // filePointers[index] = new FilePointer( fp );
     return;
   } 
@@ -130,21 +172,25 @@ void Node::insertChild( Node * child ) {
   } else {
     cerr << " child is internal\n";    
   }
-  for ( int i = 0; i < child->size(); i++ ) {
-    cerr << " " << child->getKeyAt(i) << " ";
-  } 
-
-  cerr << "\n===========\n" << " index " << index  
+  // for ( int i = 0; i < child->size(); i++ ) {
+  //   cerr << " " << child->getKeyAt(i) << " ";
+  // } 
+  // cerr << endl;
+  cerr << " childindex " << childIndex  
        << " nchild " << nChild << endl;  
-  for ( int i = nChild-1; i > index; i-- ) {
+  for ( int i = nChild-1; i > childIndex; i-- ) {
     // keys[i] = keys[i-1];
     // also need to move pointers
-    cerr << "===========\n" << i << " index " << index << endl;
-    children[i-1] = children[i];
+    children[i] = children[i-1];
   }
-  children[index] = child;
-
-
+    // cerr << "===========\n" << i << endl;
+    // for ( int j = 0; j < nChild; j++ ) {
+    //   if ( this->getChildAt(j) != nullptr ) {
+    //     cerr << this->getChildAt(j)->getFPAt(0)->getWord() << " ";
+    //   }
+    // }
+    // cerr << endl;
+  children[childIndex] = child;
 }
 
 // in leaf node, nKeys = nFPs, nChild = 0
@@ -153,17 +199,15 @@ void Node::insertKeyValuePair( string word, FilePointer fp ) {
   cerr << "inserKeyValue: size " << this->size() << " index " << index << endl;  
   if ( index == this->nKeys ) { // insert at the end
     cerr << "insert at end\n";
-    keys[index] = new string( word );
-    filePointers[index] = new FilePointer( fp );
   } else { // insert in the middle
     cerr << "insert in middle\n";
     for ( int i = this->size(); i > index; i-- ) {
       keys[i] = keys[i-1];
       filePointers[i] = filePointers[i-1];
     }
-    keys[index] = new string( word );
-    filePointers[index] = new FilePointer( fp );
   }
+  keys[index] = new string( word );
+  filePointers[index] = new FilePointer( fp );
   nKeys++;  
   // need to check final size in caller
 }
@@ -199,9 +243,9 @@ int Node::indexOfFilePointer( string word ) {
 void Node::print() {
   if ( this->isLeaf == true ) {
     for (int i = 0; i < this->size(); i++) {
-      cerr << "Key: "<< this->getKeyAt( i )
-           << " Value: " << this->getFPAt( i )
-           << endl;
+      cout << this->getFPAt( i )->getWord() << " ";
+          //  << " Value: " << this->getFPAt( i )
+          //  << endl;
     }
   }
 }

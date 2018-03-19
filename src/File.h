@@ -6,6 +6,10 @@
 using namespace std;
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <map>
+
 /* A class for Record ID
   An instance of this class will include:
   1. index file name ( index directory name in our project )
@@ -41,6 +45,8 @@ public:
   friend ostream& operator <<( ostream& out, const FilePointer& fp );
   // friend ostream& operator<<(ostream& out, const Vector2D& vec) // output
   bool fetchFromDisk();
+
+
 private:
   char * filename; // index file name a.k.a. directory name for the index files
   int pageID; // index page id
