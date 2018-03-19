@@ -64,7 +64,7 @@ public:
   void printBetween( string start, string end );
 
   void levelOrder( Node * cur );
-  void bfs( Node* cur, vector<vector<string>> &res, int depth);
+  void dfs( Node* cur, vector<vector<string>> &res, int depth);
   // vector<string> Split(const std::string& subject);
   void loadDirPage( string filename );
   vector<string> split( const string& subject );

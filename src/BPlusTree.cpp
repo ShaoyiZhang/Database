@@ -392,7 +392,7 @@ void BPlusTree::levelOrder( Node * cur ) {
     return;
   }
   vector<vector<string>> res;
-  bfs( cur, res, 0 );
+  dfs( cur, res, 0 );
   for ( int i = 0; i < res.size(); i++ ) {
     for ( int j = 0; j < res[i].size(); j++ ) {
       cout << res[i][j] << " ";
@@ -403,7 +403,7 @@ void BPlusTree::levelOrder( Node * cur ) {
   // return res;
 }
 
-void BPlusTree::bfs( Node* cur, vector<vector<string>> &res, int depth) {
+void BPlusTree::dfs( Node* cur, vector<vector<string>> &res, int depth) {
   if ( root != NULL ) { 
     if ( depth == res.size() ) {
       // new level
@@ -435,7 +435,7 @@ void BPlusTree::bfs( Node* cur, vector<vector<string>> &res, int depth) {
     if ( cur->getIsLeaf() == false ) {
       for ( int i = 0; i < cur->childSize(); i++ ) {
         if ( cur->getChildAt(i) != nullptr ) {
-          bfs( cur->getChildAt(i), res, depth + 1 );
+          dfs( cur->getChildAt(i), res, depth + 1 );
         } else {
           vector<string> newLevel;
           newLevel.push_back("null #");
